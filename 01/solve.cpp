@@ -1,7 +1,6 @@
 #include <iostream>
 #include <map>
 #include <fstream>
-#include <string>
 
 int main()
 {  
