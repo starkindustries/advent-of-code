@@ -18,38 +18,41 @@ adapters.append(deviceJolts)
 diffCount = {} 
 
 # part 2
-diff3Indices = []
+# See "Gaps to Combos" section below
+gapsToCombos = { 2: 2, 3:4, 4:7 }
+last3DiffIndex = 0
+numCombos = 1
 
 for i in range(len(adapters)-1):
     # For part 1    
     diff = adapters[i+1] - adapters[i]
     diffCount[diff] = diffCount.get(diff, 0) + 1
+    
     # For part 2
     if diff == 3:
-        # add both indices to the tracker
-        diff3Indices.extend([i, i+1])
+        # Calculate the 1-gap length
+        oneGap = i - last3DiffIndex
+        # If 1-gap is greater than 1, multiple combos are possible
+        if oneGap > 1:
+            try:
+                numCombos *= gapsToCombos[oneGap]
+            except:
+                print(f"Error: no key found in gapsToCombos for 1-gap of: {oneGap}")
+                print(f"gapsToCombos: {gapsToCombos}")
+                exit()
+        # Update the last 3-diff index
+        last3DiffIndex = i + 1
 
 # Part 1
 print(diffCount)
 print(f"Part 1: 1-jolt * 3-jolt diffs: {diffCount[1] * diffCount[3]}")
 
 # Part 2
-print("adapters")
-print(adapters)
-print("diff3indices")
-print(diff3Indices)
-# Account for the 1-gap from 0 volts to the first 3-volt difference
-gapTracker = [diff3Indices[0]]
-# Find differences in indices greater than 1
-for i in range(len(diff3Indices)-1):
-    gap = diff3Indices[i+1] - diff3Indices[i]
-    if gap > 1:
-        gapTracker.append(gap)
+print(f"Part 2: number of combos {numCombos}")
 
-print("gap tracker")
-print(gapTracker)
-print(max(gapTracker))
-
+# *************************
+# Gaps to Combos
+# *************************
 # For the first gap of given input {0, 1, 2, 3, 4}, both 0 and 4 are required.
 # 0 _ 4: one space. 3 options for slot 1: adapters 1, 2, or 3
 # 0 _ _ 4: two spaces. 3 options: adapters (1, 2), (1, 3), (2, 3)
@@ -65,9 +68,3 @@ print(max(gapTracker))
 # 1-gap of 2, e.g. {5, 6, 7}
 # {5, 7} and {5, 6, 7}
 # Total of 2 combos for 1-gap of 2
-gapsToCombos = { 0 : 0, 1: 0, 2: 2, 3:4, 4:7 }
-numCombos = 1
-for gap in gapTracker:
-    numCombos *= gapsToCombos[gap]
-
-print(f"combos: {numCombos}")
