@@ -40,51 +40,35 @@ print(
     f"Part 1: Wait {minWaitTime} minutes for bus {busID} = {minWaitTime * busID}")
 
 # Part 2
-def calculateOffsets(input):
-    buses = [bus for bus in input.split(",")]
+#                 1    1    2    2    3    3    4    4    5    5    6    6    7    7    8
+# time : ----5----0----5----0----5----0----5----0----5----0----5----0----5----0----5----0
+# bus 3: --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+# bus 5: ----*----*----*----*----*----*----*----*----*----*----*----*----*----*----*----*----*----*
+# bus 7: ------*------*------*------*------*------*------*------*------*------*------*------*------*------*
 
-    # Strategy: get the largest bus ID and use that as the check point for all other buses
-    # This will reduce having to check all timestamps by a factor of the bus's ID number
-    maxBusID = max([int(bus) for bus in buses if bus != "x"])
-    maxIndex = buses.index(str(maxBusID))
-    if DEBUG:
-        print(f"Max bus ID [{maxBusID}] at index {maxIndex}")
+# For buses 3 and 5, the first instance of a valid timestamp is 9, followed by 24, then 39.
+# 9, 24, 39 growing linearly by 15. 15 is the product of 3 and 5 (the two buses).
+# Now add bus 7 into this calculation, continuing to increase the timestamp by 15 at each check.
+# The first valid timestamp for 3, 5, and 7 is at 54. 
+# Then the next valid timestamp would be at 54 + (3 * 5 * 7) = 54 + 105 = 159
 
-    # Get offset pairs (ID, offset) for all buses
-    offsets = []
-    for i in range(len(buses)):
-        bus = buses[i]
-        if bus == "x":
+def findTimestamp(input):
+    buses = [bus for bus in input.split(",")]    
+    multiple = int(buses[0])
+    t = multiple
+    for i in range(1, len(buses)):
+        try:
+            bus = int(buses[i])
+        except:
+            # this will happen if bus is "x"
             continue
-        offset = (int(bus), i - maxIndex)
-        offsets.append(offset)    
-    # sort offset by max ID
-    offsets = sorted(offsets, key = lambda tup: tup[0], reverse=True)
-    # Remove max offset pair; not needed
-    offsets.pop(0)
-    if DEBUG:
-        print(f"Offset list: {offsets}")
-    return offsets, maxBusID, maxIndex
-
-def checkTimestamp(t, offsets):
-    for bus, offset in offsets:
-        if not ( (t + offset) / bus ).is_integer():
-            # print(f"Not integer: {t}, {offset}, {bus} = {t + offset / bus}")
-            return False
-    return True
-
-def findTimestamp(input):    
-    t = 0
-    offsets, maxBusID, maxIndex = calculateOffsets(input)    
-
-    while True:
-        if checkTimestamp(t, offsets):
-            # Adjust timestamp by the index of max bus ID
-            if DEBUG:
-                print(f"Found earliest valid timestamp at: {t - maxIndex}")
-            return t - maxIndex
-        t += maxBusID
-        # print(f"t: {t}")
+        while True:            
+            if ((t + i) / int(bus)).is_integer():                
+                multiple *= bus
+                break
+            t += multiple
+    print(f"Found t[{t}] for input {input}")
+    return t
 
 # Initial test
 offsets, _ , _ = calculateOffsets("7,13,x,x,59,x,31,19")
@@ -99,12 +83,12 @@ assert findTimestamp("67,x,7,59,61") == 779210
 assert findTimestamp("67,7,x,59,61") == 1261476
 assert findTimestamp("1789,37,47,1889") == 1202161486
 
-# Solve part 2
-# DEBUG = True
-# print(f"{fileInput[1]}")
-# findTimestamp(fileInput[1])
+offsets, _ , _ = calculateOffsets("3,5")
+assert checkTimestamp(10, offsets) == True
+assert findTimestamp("3,7") == 6
+assert findTimestamp("3,5,7") == 54
 
-# t / 7 % 1 == 0
-# (t + 7) / 19 % 1 == 0
-# 19 * x = t + 7
-# 7 * y = t
+# Solve part 2
+DEBUG = True
+print(f"{fileInput[1]}")
+findTimestamp(fileInput[1])
