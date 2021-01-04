@@ -1,7 +1,7 @@
 
 import pytest
 
-DEBUG = True
+DEBUG = False
 
 # Pre-compute the powers of 2's
 twosPlaces = [2**x for x in range(35, -1, -1)]
@@ -67,7 +67,7 @@ filename = "input.txt"
 
 with open(filename, 'r') as handle:
     program = [line.strip() for line in handle]
-print(program)
+# print(program)
 
 # Run program
 memory = {}
@@ -84,8 +84,74 @@ for line in program:
         memory[address] = applyBitmask(value, mask)
 
 # Program completed
-print(memory)
+# print(memory)
 resultSum = 0
 for _, value in memory.items():
     resultSum += value
 print(f"Part 1 sum: {resultSum}")
+
+# ******************
+# Part 2
+# ******************
+
+def applyBitmaskV2(decimal, mask):
+    binary = convertDecimalToBinary(decimal)
+    results = None
+    for maskbit, value in zip(mask, binary):        
+        if maskbit == "X":
+            if not results:
+                results = ["0", "1"]
+                continue
+            temp = [x + "1" for x in results]
+            temp.extend( [x + "0" for x in results] )
+            results = temp
+        elif maskbit == "1":
+            if not results:
+                results = ["1"]
+                continue
+            results = [x + "1" for x in results]
+        elif maskbit == "0":
+            if not results:
+                results = [value]
+                continue
+            results = [x + value for x in results]
+        else:
+            print(f"ERROR: unexpected value {maskbit} in mask: {mask}")    
+    results = [convertBinaryToDecimal(x) for x in results]
+    if DEBUG:
+        print(f"Bitmask v2 results: {results}")
+    return sorted(results)
+
+assert applyBitmaskV2(42, "000000000000000000000000000000X1001X") == [26, 27, 58, 59]
+assert applyBitmaskV2(26, "00000000000000000000000000000000X0XX") == [16, 17, 18, 19, 24, 25, 26, 27]
+
+filename = "input.txt"
+# filename = "sample2.txt"
+
+with open(filename, 'r') as handle:
+    program = [line.strip() for line in handle]
+
+# Run program
+memory = {}
+mask = ""
+for line in program:
+    line = line.split(" ")
+    if line[0] == "mask":
+        # update mask
+        mask = line[2]
+    else:
+        # execute mem instruction
+        address = int(line[0][4:-1])
+        value = int(line[2])
+        maskAddresses = applyBitmaskV2(address, mask)
+        for a in maskAddresses:
+            memory[a] = value        
+
+if DEBUG:
+    print(f"Part 2 memory: {memory}")
+
+# Program completed
+resultSum = 0
+for _, value in memory.items():
+    resultSum += value
+print(f"Part 2 sum: {resultSum}")
