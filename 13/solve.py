@@ -70,10 +70,9 @@ def findTimestamp(input):
     print(f"Found t[{t}] for input {input}")
     return t
 
-# Initial test
-offsets, _ , _ = calculateOffsets("7,13,x,x,59,x,31,19")
-assert checkTimestamp(0, offsets) == False
-assert checkTimestamp(1068785, offsets) == True
+# Initial Tests
+assert findTimestamp("3,7") == 6
+assert findTimestamp("3,5,7") == 54
 
 # Tests from problem description
 assert findTimestamp("7,13,x,x,59,x,31,19") == 1068781
@@ -82,11 +81,6 @@ assert findTimestamp("67,7,59,61") == 754018
 assert findTimestamp("67,x,7,59,61") == 779210
 assert findTimestamp("67,7,x,59,61") == 1261476
 assert findTimestamp("1789,37,47,1889") == 1202161486
-
-offsets, _ , _ = calculateOffsets("3,5")
-assert checkTimestamp(10, offsets) == True
-assert findTimestamp("3,7") == 6
-assert findTimestamp("3,5,7") == 54
 
 # Solve part 2
 DEBUG = True
