@@ -63,11 +63,7 @@ def solve_part1(filename):
 #                 [40, 4, 50], 
 #                 [55, 2, 20]]
 
-def valid_rule_for_column(rules, rule_index, tickets, ticket_column, rules_to_columns={}):
-    key = str(rule_index) + ":" + str(ticket_column)
-    if key in rules_to_columns:
-        # print(f"key found: {key}: {rules_to_columns[key]}")
-        return rules_to_columns[key]
+def valid_rule_for_column(rules, rule_index, tickets, ticket_column):    
     for ticket in tickets:
         ticket_is_valid = False
         for lower_range, upper_range in rules[rule_index]:
@@ -76,9 +72,7 @@ def valid_rule_for_column(rules, rule_index, tickets, ticket_column, rules_to_co
                 ticket_is_valid = True                
                 break
         if not ticket_is_valid:
-            rules_to_columns[key] = False
             return False
-    rules_to_columns[key] = True
     return True
 
 rule = [[[0,1],[4,19]]]
@@ -88,7 +82,7 @@ assert valid_rule_for_column(rule, 0, tickets, 1) == True
 assert valid_rule_for_column(rule, 0, tickets, 2) == True
 
 rule = [[[0,5],[8,19]]]
-assert valid_rule_for_column(rule, 0, tickets, 0, {}) == True
+assert valid_rule_for_column(rule, 0, tickets, 0) == True
 assert valid_rule_for_column(rule, 0, tickets, 1) == True
 assert valid_rule_for_column(rule, 0, tickets, 2) == True
 assert valid_rule_for_column(rule, 0, [[6]], 0) == False
@@ -260,3 +254,4 @@ solve_part2("input.txt")
 
 # 486854505461
 # 233401847267
+# 1093427331937
