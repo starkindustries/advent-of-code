@@ -1,13 +1,13 @@
-#*************************
+# *************************
 # part 1
-#*************************
+# *************************
 def passportIsValid(data):
     checksum = [0] * 7
-    for line in data: 
+    for line in data:
         # hgt:59cm byr:2029 cid:219 pid:9381688753 eyr:1992 hcl:#b6652a
         for item in line.split(" "):
             # hgt:59cm
-            key, _ = item.split(":")                
+            key, _ = item.split(":")
             if key == "byr":
                 checksum[0] = 1
             elif key == "iyr":
@@ -22,11 +22,12 @@ def passportIsValid(data):
                 checksum[5] = 1
             elif key == "pid":
                 checksum[6] = 1
-    result = "".join(map(str,checksum))    
+    result = "".join(map(str, checksum))
     print(f"Result: {result}")
-    if result == "1111111":        
+    if result == "1111111":
         return True
     return False
+
 
 valid = 0
 with open("input.txt", 'r') as handle:
@@ -36,22 +37,24 @@ with open("input.txt", 'r') as handle:
         if line == "":
             if passportIsValid(passportData):
                 valid += 1
-            passportData = []            
+            passportData = []
         else:
             passportData.append(line)
     if passportIsValid(passportData):
         valid += 1
-        
+
 print(f"Valid passports part 1: {valid}\n\n")
 
-#*************************
+# *************************
 # part 2
-#*************************
+# *************************
+
+
 def passportIsValid2(data):
     checksum = [0] * 7
-    for line in data: 
+    for line in data:
         for item in line.split(" "):
-            key, value = item.split(":")       
+            key, value = item.split(":")
             # birth year
             if key == "byr":
                 if not (1920 <= int(value) <= 2002):
@@ -71,10 +74,10 @@ def passportIsValid2(data):
                     return False
                 checksum[2] = 1
             # height
-            elif key == "hgt":                
+            elif key == "hgt":
                 metric = value[-2:]
                 height = 0
-                try:                    
+                try:
                     height = int(value[:-2])
                 except:
                     print(f"invalid height conversion: {value}")
@@ -106,7 +109,7 @@ def passportIsValid2(data):
                 checksum[4] = 1
             # eyes
             elif key == "ecl":
-                if value not in ["amb","blu","brn","gry","grn","hzl","oth"]:
+                if value not in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]:
                     print(f"invalid eye color: {value}")
                     return False
                 checksum[5] = 1
@@ -122,19 +125,20 @@ def passportIsValid2(data):
                         print(f"invalid passport: {value}")
                         return False
                 checksum[6] = 1
-    result = "".join(map(str,checksum))    
+    result = "".join(map(str, checksum))
     # print(f"Result: {result}")
-    if result == "1111111":        
+    if result == "1111111":
         return True
     return False
+
 
 valid = 0
 with open("input.txt", 'r') as handle:
     passportData = []
-    for line in handle:        
+    for line in handle:
         line = line.strip()
         # print(f"line: {line}")
-        if line == "":            
+        if line == "":
             if passportIsValid2(passportData):
                 # print(f"Valid passport: {passportData}")
                 valid += 1
@@ -145,5 +149,5 @@ with open("input.txt", 'r') as handle:
             passportData.append(line)
     if passportIsValid2(passportData):
         valid += 1
-        
+
 print(f"Valid passports part 2: {valid}")

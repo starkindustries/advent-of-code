@@ -10,14 +10,14 @@ print(f"w: {w}")
 
 x = 0
 trees = 0
-for line in area:        
+for line in area:
     if line[x % w] == "#":
-        trees +=1
+        trees += 1
     x += 3
 print(f"Part 1: {trees} trees")
 
 
-# part 2 
+# part 2
 def countTreesAlongSlope(right, down):
     x, y = 0, 0
     trees = 0
@@ -28,6 +28,7 @@ def countTreesAlongSlope(right, down):
         y += down
     return trees
 
+
 slopes = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]]
 
 product = 1
@@ -36,4 +37,3 @@ for r, d in slopes:
     product *= trees
     print(f"Trees along slope[{r},{d}]: {trees}")
 print(f"Part 2: {product}")
-

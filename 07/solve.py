@@ -5,16 +5,17 @@
 rules = {}
 # outside: inside bag rules (part 2)
 rules2 = {}
-with open("input.txt", 'r') as handle:    
+with open("input.txt", 'r') as handle:
     for line in handle:
         line = line.strip()
         # split the container from its contents
-        container, contents = line.split(" contain ")        
+        container, contents = line.split(" contain ")
         # drop the period '.' and split on the command ','
         contents = contents[:-1].split(", ")
         # drop the 'bags'
         container = container.replace(' bags', '')
-        contents = [c.replace(' bags', '').replace(' bag', '') for c in contents]
+        contents = [c.replace(' bags', '').replace(' bag', '')
+                    for c in contents]
         for c in contents:
             try:
                 number = int(c[:2])
@@ -45,11 +46,14 @@ while len(queue) > 0:
 print(f"Total count: {len(containers)}")
 
 # part 2
+
+
 def getTotalBags(bag):
     total = 0
     for insideBag, number in rules2[bag]:
         total += number + number * getTotalBags(insideBag)
     return total
+
 
 print(f"rules2: {rules2}")
 total = getTotalBags("shiny gold")

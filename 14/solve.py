@@ -1,11 +1,10 @@
 
-import pytest
-
 DEBUG = False
 
 # Pre-compute the powers of 2's
 twosPlaces = [2**x for x in range(35, -1, -1)]
 # print(twosPlaces)
+
 
 def convertDecimalToBinary(n):
     temp = n
@@ -20,25 +19,29 @@ def convertDecimalToBinary(n):
         print(f"Decimal {n} converts to binary {binary}")
     return binary
 
-assert convertDecimalToBinary(11)  == "000000000000000000000000000000001011"
-assert convertDecimalToBinary(73)  == "000000000000000000000000000001001001"
+
+assert convertDecimalToBinary(11) == "000000000000000000000000000000001011"
+assert convertDecimalToBinary(73) == "000000000000000000000000000001001001"
 assert convertDecimalToBinary(101) == "000000000000000000000000000001100101"
-assert convertDecimalToBinary(64)  == "000000000000000000000000000001000000"
-assert convertDecimalToBinary(0)   == "000000000000000000000000000000000000"
+assert convertDecimalToBinary(64) == "000000000000000000000000000001000000"
+assert convertDecimalToBinary(0) == "000000000000000000000000000000000000"
+
 
 def convertBinaryToDecimal(n):
     result = 0
-    for i, bit in enumerate(n):        
+    for i, bit in enumerate(n):
         result += int(bit) * twosPlaces[i]
     if DEBUG:
         print(f"Binary {n} converts to decimal {result}")
     return result
+
 
 assert convertBinaryToDecimal("000000000000000000000000000000001011") == 11
 assert convertBinaryToDecimal("000000000000000000000000000001001001") == 73
 assert convertBinaryToDecimal("000000000000000000000000000001100101") == 101
 assert convertBinaryToDecimal("000000000000000000000000000001000000") == 64
 assert convertBinaryToDecimal("000000000000000000000000000000000000") == 0
+
 
 def applyBitmask(decimal, mask):
     binary = convertDecimalToBinary(decimal)
@@ -53,6 +56,7 @@ def applyBitmask(decimal, mask):
         else:
             print(f"ERROR: unexpected value in mask: {mask}")
     return convertBinaryToDecimal(result)
+
 
 assert applyBitmask(11, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 73
 assert applyBitmask(101, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 101
@@ -73,7 +77,7 @@ with open(filename, 'r') as handle:
 memory = {}
 mask = ""
 for line in program:
-    line = line.split(" ")    
+    line = line.split(" ")
     if line[0] == "mask":
         # update mask
         mask = line[2]
@@ -94,16 +98,17 @@ print(f"Part 1 sum: {resultSum}")
 # Part 2
 # ******************
 
+
 def applyBitmaskV2(decimal, mask):
     binary = convertDecimalToBinary(decimal)
     results = None
-    for maskbit, value in zip(mask, binary):        
+    for maskbit, value in zip(mask, binary):
         if maskbit == "X":
             if not results:
                 results = ["0", "1"]
                 continue
             temp = [x + "1" for x in results]
-            temp.extend( [x + "0" for x in results] )
+            temp.extend([x + "0" for x in results])
             results = temp
         elif maskbit == "1":
             if not results:
@@ -116,14 +121,17 @@ def applyBitmaskV2(decimal, mask):
                 continue
             results = [x + value for x in results]
         else:
-            print(f"ERROR: unexpected value {maskbit} in mask: {mask}")    
+            print(f"ERROR: unexpected value {maskbit} in mask: {mask}")
     results = [convertBinaryToDecimal(x) for x in results]
     if DEBUG:
         print(f"Bitmask v2 results: {results}")
     return sorted(results)
 
-assert applyBitmaskV2(42, "000000000000000000000000000000X1001X") == [26, 27, 58, 59]
-assert applyBitmaskV2(26, "00000000000000000000000000000000X0XX") == [16, 17, 18, 19, 24, 25, 26, 27]
+
+assert applyBitmaskV2(42, "000000000000000000000000000000X1001X") == [
+    26, 27, 58, 59]
+assert applyBitmaskV2(26, "00000000000000000000000000000000X0XX") == [
+    16, 17, 18, 19, 24, 25, 26, 27]
 
 filename = "input.txt"
 # filename = "sample2.txt"
@@ -145,7 +153,7 @@ for line in program:
         value = int(line[2])
         maskAddresses = applyBitmaskV2(address, mask)
         for a in maskAddresses:
-            memory[a] = value        
+            memory[a] = value
 
 if DEBUG:
     print(f"Part 2 memory: {memory}")

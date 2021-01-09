@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import math
-import pytest
 
 DEBUG = True
 
@@ -49,11 +48,12 @@ print(
 # For buses 3 and 5, the first instance of a valid timestamp is 9, followed by 24, then 39.
 # 9, 24, 39 growing linearly by 15. 15 is the product of 3 and 5 (the two buses).
 # Now add bus 7 into this calculation, continuing to increase the timestamp by 15 at each check.
-# The first valid timestamp for 3, 5, and 7 is at 54. 
+# The first valid timestamp for 3, 5, and 7 is at 54.
 # Then the next valid timestamp would be at 54 + (3 * 5 * 7) = 54 + 105 = 159
 
+
 def findTimestamp(input):
-    buses = [bus for bus in input.split(",")]    
+    buses = [bus for bus in input.split(",")]
     multiple = int(buses[0])
     t = multiple
     for i in range(1, len(buses)):
@@ -62,13 +62,14 @@ def findTimestamp(input):
         except:
             # this will happen if bus is "x"
             continue
-        while True:            
-            if ((t + i) / int(bus)).is_integer():                
+        while True:
+            if ((t + i) / int(bus)).is_integer():
                 multiple *= bus
                 break
             t += multiple
     print(f"Found t[{t}] for input {input}")
     return t
+
 
 # Initial Tests
 assert findTimestamp("3,7") == 6

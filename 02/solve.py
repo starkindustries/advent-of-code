@@ -3,6 +3,7 @@
 
 filename = "input.txt"
 
+
 def passwordIsValid(min, max, key, password):
     count = 0
     for letter in password:
@@ -22,10 +23,10 @@ with open(filename, 'r') as handle:
         min, max = map(int, a.split("-"))
         key = b[0]
         password = c
-        
+
         print(f"{min}, {max}, {key}, {password}")
         if passwordIsValid(min, max, key, password):
-            validPasswords += 1                
+            validPasswords += 1
 print(f"Valid passwords part 1: {validPasswords}")
 
 # part 2
@@ -36,7 +37,7 @@ with open(filename, 'r') as handle:
         p1, p2 = map(int, a.split("-"))
         key = b[0]
         password = c
-        
+
         print(f"{min}, {max}, {key}, {password}")
         p1 -= 1
         p2 -= 1

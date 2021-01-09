@@ -4,6 +4,8 @@ filename = "input.txt"
 # filename = "sample.txt"
 
 # Part 1 instructions parser
+
+
 def processInstruction(i, x, y, r):
     action = i[0]
     value = int(i[1:])
@@ -35,6 +37,8 @@ def processInstruction(i, x, y, r):
     print(f"Error at instruction: {i}. Position: {x},{y},{r}")
 
 # Part 2 instructions parser
+
+
 def processInstruction2(i, wx, wy, x, y):
     action = i[0]
     value = int(i[1:])
@@ -61,6 +65,7 @@ def processInstruction2(i, wx, wy, x, y):
     elif action == "F":
         return wx, wy, (x+wx*value), (y+wy*value)
     print(f"Error at instruction: {i}. Position: {x},{y},{r}")
+
 
 # Part 1
 x, y, r = 0, 0, 90

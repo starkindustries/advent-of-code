@@ -5,16 +5,16 @@
 def getSeatID(seatCode):
     seatRow = seatCode[0:7]
     seatCol = seatCode[7:]
-    
+
     rowLeftIndex, rowRightIndex = 0, 128
     colLeftIndex, colRightIndex = 0, 8
-    
+
     # Row
     for letter in seatRow:
         if letter == "F":
             rowRightIndex = (rowLeftIndex + rowRightIndex) // 2
         else:
-            rowLeftIndex = (rowLeftIndex + rowRightIndex) // 2        
+            rowLeftIndex = (rowLeftIndex + rowRightIndex) // 2
     row = (rowLeftIndex + rowRightIndex) // 2
 
     # Col
@@ -24,14 +24,13 @@ def getSeatID(seatCode):
         else:
             colLeftIndex = (colLeftIndex + colRightIndex) // 2
     col = (colRightIndex + colLeftIndex) // 2
-    # print(f"Row: {rowLeftIndex},{rowRightIndex}. Col: {colLeftIndex},{colRightIndex}")
-    # print(f"row, col: {row}, {col}")
     return row * 8 + col
+
 
 maxSeatID = -1
 seatList = []
 with open("input.txt", 'r') as handle:
-    for line in handle:        
+    for line in handle:
         seatCode = line.strip()
         seatID = getSeatID(seatCode)
         maxSeatID = max(maxSeatID, seatID)
