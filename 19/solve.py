@@ -36,12 +36,8 @@ def parse_input(filename):
 
 
 def follow_rule(i, rules):
-
     rule = rules[i]
-    # for rule in rules.values():
     if rule[0][0] in ['a', 'b']:
-        # messages = [x.append(rule[0][0]) for x in messages]
-        # print(rule[0][0])
         return [rule[0][0]]
     else:
         messages = []
@@ -58,12 +54,8 @@ def follow_rule(i, rules):
 
 def solve_part1(filename):
     rules, messages = parse_input(filename)
-    # print(rules)
-    # print(messages)
 
     valid_messages = follow_rule(0, rules)
-    # print("MESSAGES")
-    # print(valid_messages)
 
     count = 0
     for m in messages:
@@ -71,10 +63,6 @@ def solve_part1(filename):
             count += 1
     print(f"Valid message count: {count}")
     return count
-    # n = 0
-    # while True:
-    #     rule = rules[0]
-    #     for item in rule:
 
 
 assert solve_part1("sample1.txt") == 2
