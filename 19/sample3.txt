@@ -1,0 +1,14 @@
+0: 3 4
+1: "a"
+2: "b"
+3: 1 | 1 3
+4: 2 | 2 4
+
+ab
+aabb
+aaabbb
+aaaabbbb
+abb
+abbb
+aab
+aaab
