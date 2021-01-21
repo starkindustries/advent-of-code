@@ -47,7 +47,6 @@ assert evaluate_part1("4 + ((1 + 2 * 2) * (2 + 4 * 7 + 5 * 3))") == 850
 def add_then_multiply(stack):
     # Iterate through array and evaluation addition first
     # example: [(4, '*'), (4, '+'), (9, '*'), (3, None)]
-    print(stack)
     i = 0
     while i < len(stack) - 1:
         num, operand = stack[i]  # ex: i = 1, r = 4, o = '+'
@@ -66,69 +65,27 @@ def add_then_multiply(stack):
     return result
 
 
-# r is result
-# o is operand
 def evaluate_part2(equation):
-    # 1 + 2 * 3 + 4 * 5 + 6
-    # ^
-    # 1 + 2 * 3 + 4 * 5 + 6
-    #   3   *   7   * 11
-    # s = [(3, *), (7, *)]
-    # r = 11 * 7 * 3
-    # o =
-    # 3 * 3 + 4 * 5 + 6
     equation = equation.replace(' ', '')
-    result = None
+    num = None
     operand = None
     stack = []
     for i in range(len(equation)):
         if equation[i].isdigit():
-            if result is None:
-                result = int(equation[i])
-            elif operand == "*":
-                stack.append((result, operand))
-                result = int(equation[i])
-                operand = None
-            elif operand == "+":
-                result += int(equation[i])
+            num = int(equation[i])
         elif equation[i] in ["*", "+"]:
-            operand = equation[i]
+            stack.append((num, equation[i]))
         elif equation[i] == "(":
-            stack.append((result, operand))
             stack.append((None, "("))
-            result = None
-            operand = None
         elif equation[i] == ")":
-            temp_stack = [(result, None)]
-            print(stack)
-            print(f"operand: {operand}. result: {result}")
-            num, operand = stack.pop()
-            while operand != "(":
-                temp_stack.insert(0, (num, operand))
-                num, operand = stack.pop()
-            result = add_then_multiply(temp_stack)
-    stack.append((result, operand))
-
-    # Iterate through stack and evaluation addition first
-    # example: [(4, '*'), (4, '+'), (9, '*'), (3, None)]
-    print(stack)
+            temp_stack = [(num, None)]
+            n, o = stack.pop()
+            while o != "(":
+                temp_stack.insert(0, (n, o))
+                n, o = stack.pop()
+            num = add_then_multiply(temp_stack)
+    stack.append((num, operand))
     return add_then_multiply(stack)
-    # i = 0
-    # while i < len(stack) - 1:
-    #     r, o = stack[i]  # ex: i = 1, r = 4, o = '+'
-    #     if o == "+":
-    #         r2, o = stack.pop(i+1)  # r2 = 9, o = '*'
-    #         stack[i] = (r + r2, o)  # (4 + 9, *) => (13, *)
-    #     elif o in ['(', ')']:
-    #         raise RuntimeError(f"Unexpected operand {o} in stack: {stack} for equation: {equation}")
-    #     else:
-    #         i += 1
-    # # Now evaluate multiplication
-    # result = 1
-    # for r, o in stack:
-    #     if r is not None:
-    #         result *= r
-    # return result
 
 
 assert evaluate_part2("1 + 2 * 3 + 4 * 5 + 6") == 231
@@ -170,4 +127,4 @@ def solve_part2(filename):
 
 
 assert solve_part1("input.txt") == 30753705453324
-assert solve_part2("input.txt")
+assert solve_part2("input.txt") == 244817530095503
