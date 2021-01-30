@@ -41,10 +41,24 @@ def solve(filename):
     allergens = [list(i)[0] for i in allergen_dict.values()]
     for a in allergens:
         ingredient_count.pop(a)
+    
+    # Part 2
+    allergens = sorted(allergen_dict.keys())
+    dangerous = ""
+    for a in allergens:
+        dangerous += list(allergen_dict[a])[0] + ","
+    dangerous = dangerous[:-1]
 
-    return sum(ingredient_count.values())
+    return sum(ingredient_count.values()), dangerous
 
 
-assert solve("sample.txt") == 5
-result = solve("input.txt")
-print(f"part 1: {result}")
+part1, part2 = solve("sample.txt")
+assert part1 == 5
+assert part2 == "mxmxvkd,sqjhc,fvjkl"
+
+part1, part2 = solve("input.txt")
+assert part1 == 2380
+assert part2 == "ktpbgdn,pnpfjb,ndfb,rdhljms,xzfj,bfgcms,fkcmf,hdqkqhh"
+
+print(f"part 1: {part1}")
+print(f"part 2: {part2}")
