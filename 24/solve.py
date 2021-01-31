@@ -41,16 +41,69 @@ def parse_directions(line):
     return x, y
 
 
+def get_adj_tiles(x, y, black_tiles):
+    # East
+    black, white = set(), set()
+    if (x+2, y) in black_tiles:
+        black.add((x+2, y))
+    else:
+        white.add((x+2, y))
+    # West
+    if (x-2, y) in black_tiles:
+        black.add((x-2, y))
+    else:
+        white.add((x-2, y))
+    # NorthEast
+    if (x+1, y+1) in black_tiles:
+        black.add((x+1, y+1))
+    else:
+        white.add((x+1, y+1))
+    # NorthWest
+    if (x-1, y+1) in black_tiles:
+        black.add((x-1, y+1))
+    else:
+        white.add((x-1, y+1))
+    # SouthEast
+    if (x+1, y-1) in black_tiles:
+        black.add((x+1, y-1))
+    else:
+        white.add((x+1, y-1))
+    # SouthWest
+    if (x-1, y-1) in black_tiles:
+        black.add((x-1, y-1))
+    else:
+        white.add((x-1, y-1))
+    return black, white
+
+
 def flip(black_tiles):
-    pass
+    new_black_tiles = set()
+    white_tiles = set()
+    for x, y in black_tiles:
+        black_adj, white_adj = get_adj_tiles(x, y, black_tiles)
+        white_tiles.update(white_adj)
+        # Any black tile with zero or more than 2 black tiles
+        # immediately adjacent to it is flipped to white.
+        if len(black_adj) == 0 or len(black_adj) > 2:
+            # tile gets flipped to white
+            continue
+        else:  # tile remains black
+            new_black_tiles.add((x, y))
+
+    # Any white tile with exactly 2 black tiles immediately
+    # adjacent to it is flipped to black.
+    for x, y in white_tiles:
+        black_adj, _ = get_adj_tiles(x, y, black_tiles)
+        if len(black_adj) == 2:
+            new_black_tiles.add((x, y))
+    return new_black_tiles
 
 
-# Track black tiles in a map
-def solve(filename, days=0):
+def solve(filename, days=None):
     with open(filename) as handle:
         lines = [line.strip() for line in handle]
 
-    # Part 1
+    # Part 1 and Part 2
     black_tiles = set()
     for line in lines:
         x, y = parse_directions(line)
@@ -59,15 +112,42 @@ def solve(filename, days=0):
         else:
             black_tiles.add((x, y))
 
-    part1 = len(black_tiles)
-    print(f"Part 1: {part1}")
+    # Part 1
+    if days is None:
+        result = len(black_tiles)
+        print(f"Part 1: {result}")
+        return result
 
     # Part 2
     for _ in range(days):
-        flip(black_tiles)
+        black_tiles = flip(black_tiles)
+    result = len(black_tiles)
+    print(f"Part 2: {result}")
+    return result
 
-    return part1
 
-
+# Part 1
 assert solve("sample.txt") == 10
 assert solve("input.txt") == 293
+
+# Part 2
+assert solve("sample.txt", 1) == 15
+assert solve("sample.txt", 2) == 12
+assert solve("sample.txt", 3) == 25
+assert solve("sample.txt", 4) == 14
+assert solve("sample.txt", 5) == 23
+assert solve("sample.txt", 6) == 28
+assert solve("sample.txt", 7) == 41
+assert solve("sample.txt", 8) == 37
+assert solve("sample.txt", 9) == 49
+assert solve("sample.txt", 10) == 37
+assert solve("sample.txt", 20) == 132
+assert solve("sample.txt", 30) == 259
+assert solve("sample.txt", 40) == 406
+assert solve("sample.txt", 50) == 566
+assert solve("sample.txt", 60) == 788
+assert solve("sample.txt", 70) == 1106
+assert solve("sample.txt", 80) == 1373
+assert solve("sample.txt", 90) == 1844
+assert solve("sample.txt", 100) == 2208
+assert solve("input.txt", 100) == 3967
