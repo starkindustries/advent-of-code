@@ -47,6 +47,22 @@ def flip_tile(tile, flip):
         return rotate_tile(tile, 180)
 
 
+def orient(tile, angle, flip):
+    assert flip in FLIPS and angle in ROTATIONS
+    return rotate_tile(flip_tile(tile, flip), angle)
+
+
+# ****************************
+# Orientations (angle, flip)
+# ****************************
+# 1: [(0, 0), (180, 3)]
+# 2: [(90, 0), (270, 3)]
+# 3: [(180, 0), (0, 3)]
+# 4: [(270, 0), (90, 3)]
+# 5: [(0, 1), (180, 2)]
+# 6: [(90, 1), (270, 2)]
+# 7: [(180, 1), (0, 2)]
+# 8: [(270, 1), (90, 2)]
 def get_orientations():
     tile1427 = (
         '###.##.#..',
@@ -62,88 +78,38 @@ def get_orientations():
     tiles = {}
     for flip in FLIPS:
         for angle in ROTATIONS:
-            new_tile = flip_tile(tile1427, flip)
-            new_tile = rotate_tile(new_tile, angle)
+            new_tile = orient(tile1427, angle, flip)
+            # new_tile = flip_tile(tile1427, flip)
+            # new_tile = rotate_tile(new_tile, angle)
             tiles.setdefault(new_tile, [])
             tiles[new_tile].append((angle, flip))
     orientations = []
     for _, values in tiles.items():
         print(f"values: {values}")
+        # Ignore orientations that produce the same tile:
         orientations.append(values[0])
     return tuple(orientations)
 
-get_orientations()
-exit()
 
-# *******************
-# Constants
-# *******************
-TOP, RIGHT, BOTTOM, LEFT = 0, 1, 2, 3
-num_orientations = 8
-
-# *******************
-# Orientations
-# *******************
-# Terms:
-# corners = 1, 2, 3, 4
-
-# 1 2    2 1
-# 3 4 => 4 3 flip horizontal
-
-# normal edges   top = 1 2,  right = 2 3,  bottom = 3 4,  left = 4 1
-# flipped edges top2 = 2 1, right2 = 3 2, bottom2 = 4 3, left2 = 1 4
-# normal:
-# 0) 1 2 3 4 => top right bottom left
-# 1) 2 3 4 1 => right bottom left top
-# 2) 3 4 1 2 => bottom left top right
-# 3) 4 1 2 3 => left top right bottom
-# flipped:
-# 4) 1 4 3 2 => left2 bottom2 right2 top2
-# 5) 4 3 2 1 => bottom2 right2 top2 left2
-# 6) 3 2 1 4 => right2 top2 left2 bottom2
-# 7) 2 1 4 3 => top2 left2 bottom2 right2
+ORIENTATIONS = get_orientations()
 
 
-class Tile:
-    def __init__(self, image, o=None):
-        self.orientation = o
-        self.image = image[:]
-        self.top = image[0]
-        self.bottom = image[9]
-        self.left, self.right = "", ""
-        for row in image:
-            self.left += row[0]
-            self.right += row[9]
+def matches(t1, t2, tiles, horizontal):
+    tile1 = orient(tiles[t1[0]], t1[1], t1[2])
+    tile2 = orient(tiles[t2[0]], t2[1], t2[2])
 
-    def get_edges(self):
-        if self.orientation == 0:
-            return [self.top, self.right, self.bottom, self.left]
-        elif self.orientation == 1:
-            return [self.right, self.bottom[::-1], self.left, self.top[::-1]]
-        elif self.orientation == 2:
-            return [self.bottom[::-1], self.left, self.top, self.right]
-        elif self.orientation == 3:
-            return [self.left, self.top, self.right, self.bottom]
-        elif self.orientation == 4:
-            return [self.left[::-1], self.bottom[::-1], self.right[::-1], self.top[::-1]]
-        elif self.orientation == 5:
-            return [self.bottom[::-1], self.right[::-1], self.top[::-1], self.left[::-1]]
-        elif self.orientation == 6:
-            return [self.right[::-1], self.top[::-1], self.left[::-1], self.bottom[::-1]]
-        elif self.orientation == 7:
-            return [self.top[::-1], self.left[::-1], self.bottom[::-1], self.right[::-1]]
-
-    def get_side(self, side):
-        return self.get_edges()[side]
-
-    def matches(self, side1, tile2, side2):
-        return self.get_side(side1) == tile2.get_side(side2)
+    if horizontal:
+        for row in range(len(tile1)):
+            if tile1[row][9] != tile2[row][0]:
+                return False
+        return True
+    # Vertical
+    return tile1[9] == tile2[0]
 
 
-def tile_valid(graph, tile_num, orientation, tile_map, side_len):
+def tile_valid(graph, tile, tiles, length):
     # the tile to be checked should not already be in the graph
-    if tile_num in [tup[0] for tup in graph]:
-        return False
+    assert tile[0] not in [item[0] for item in graph]
 
     # if graph is empty, then any tile is valid
     if not graph:
@@ -153,65 +119,35 @@ def tile_valid(graph, tile_num, orientation, tile_map, side_len):
     # 0 1 2
     # 3 4 5  above tiles: all positions > 2
     # 6 7 8  left tiles: all positions (index % 3) > 0
-    tile = Tile(tile_map[tile_num].image, orientation)
     pos = len(graph)
-    if pos >= side_len:  # check above tile
-        t, o = graph[pos - side_len]
-        above_tile = Tile(tile_map[t].image, o)
-        if not above_tile.matches(BOTTOM, tile, TOP):
+    # check above tile
+    if pos >= length:
+        top_tile = graph[pos - length]
+        if not matches(top_tile, tile, tiles, False):
             return False
-    if (pos % side_len) > 0:  # check left tile
-        t, o = graph[pos - 1]
-        left_tile = Tile(tile_map[t].image, o)
-        if not left_tile.matches(RIGHT, tile, LEFT):
+    # check left tile
+    if (pos % length) > 0:
+        left_tile = graph[pos - 1]
+        if not matches(left_tile, tile, tiles, True):
             return False
     return True
 
 
-def print_graph(graph, tile_map):
-    for t, o in graph:
-        print(f"t:{t}, o:{o}")
-        tile = Tile(tile_map[t].image, o)
-        edges = tile.get_edges()
-        print(edges[0])
-        for i in range(1, 9):
-            print(f"{edges[3][i]}________{edges[1][i]}")
-        print(edges[2])
-
-
-# graph: list of tuples: [(tile #, orientation), (t, o), ...]
-# tiles: list of tile numbers, e.g. [1951, 2311, 3079]
-# side_len: the length of the side of the full image
-def assemble(graph, tiles, tile_map, side_len):
-    print(f"ASSEMBLE: tiles:{tiles}, graph:{graph}")
-    print_graph(graph, tile_map)
-    if len(graph) == side_len ** 2:
+def assemble(graph, tiles, length):
+    if len(graph) == length ** 2:
         return graph
 
-    for tile in tiles:
-        for o in range(num_orientations):
-            if tile_valid(graph, tile, o, tile_map, side_len):
-                temp_graph = graph[:]
-                temp_graph.append((tile, o))
-                temp_tiles = tiles[:]
-                temp_tiles.remove(tile)
-                if (temp_graph := assemble(temp_graph, temp_tiles, tile_map, side_len)):
-                    return temp_graph
+    for num in tiles.keys():
+        if num in [item[0] for item in graph]:
+            continue
+        for angle, flip in ORIENTATIONS:
+            tile = (num, angle, flip)
+            if tile_valid(graph, tile, tiles, length):
+                new_graph = graph[:]
+                new_graph.append(tile)
+                if assemble(new_graph, tiles, length):
+                    return new_graph
     return False  # no valid graph found
-
-    # for t in tiles:
-    #     tiles.remove(t)
-    #     for o in range(num_orientations):
-    #         print(f"IF_TILE_VALID: t:{t}, tiles:{tiles}, graph:{graph}")
-    #         if tile_valid(graph, t, o, tile_map, side_len):
-    #             graph.append((t, o))
-    #             print(f"TILE_VALID: t:{t}, tiles:{tiles}, graph:{graph}")
-    #             if assemble(graph[:], tiles[:], tile_map, side_len):
-    #                 return graph
-    #             else:
-    #                 graph.remove((t, o))
-    #     tiles.append(t)
-    # return False  # no valid graph found
 
 
 def parse_input(filename):
@@ -227,7 +163,7 @@ def parse_input(filename):
             continue
         elif len(image) == 9:
             image.append(line)
-            tiles[tile_num] = Tile(image)
+            tiles[tile_num] = image[:]
             image = []
         elif "Tile" in line:
             tile_num = int(line.replace(':', '').split(" ")[1])
@@ -235,43 +171,49 @@ def parse_input(filename):
             image.append(line)
 
     pp = pprint.PrettyPrinter(indent=2)
-    for key, value in tiles.items():
+    for key, image in tiles.items():
         print(key)
-        pp.pprint(value.image)
+        pp.pprint(image)
     return tiles
 
 
 def solve(filename):
-    tile_map = parse_input(filename)
-    tiles = list(tile_map.keys())
+    tiles = parse_input(filename)
+
+    # get length of image
+    length = int(math.sqrt(len(tiles)))
     graph = []
-    side_len = int(math.sqrt(len(tiles)))
-    graph = assemble(graph, tiles, tile_map, side_len)
+    graph = assemble(graph, tiles, length)
+
     # get the product of the four corners:
     print(f"GRAPH: {graph}")
     if not graph:
         return False
-    result = graph[0][0] * graph[side_len-1][0] * \
-        graph[side_len**2-1][0] * graph[side_len**2-side_len][0]
+    result = graph[0][0] * graph[length-1][0] * \
+        graph[length**2-1][0] * graph[length**2-length][0]
     print(f"RESULT: {result}")
     return result
 
 
-"""
 # Test input parsing
-tile_map = parse_input("./20/sample.txt")
-assert tile_map[1427].image == ['###.##.#..', '.#..#.##..', '.#.##.#..#', '#.#.#.##.#',
-                                '....#...##', '...##..##.', '...#.#####', '.#.####.#.', '..#..###.#', '..##.#..#.']
+tiles = parse_input("./20/sample.txt")
+assert tiles[1427] == ['###.##.#..',
+                       '.#..#.##..',
+                       '.#.##.#..#',
+                       '#.#.#.##.#',
+                       '....#...##',
+                       '...##..##.',
+                       '...#.#####',
+                       '.#.####.#.',
+                       '..#..###.#',
+                       '..##.#..#.']
 
 # Test tile_valid function
-# Case where any tile is valid for empty graph
-assert tile_valid([], 10, 0, tile_map, 3)
-# Case where tile matches up against first tile in graph
+# any tile is valid for empty graph
+assert tile_valid([], (1427, 0, 0), tiles, 3)
 tile_map = parse_input("./20/test1.txt")
-assert tile_valid([(1951, 0)], 2311, 0, tile_map, 3)
-"""
+# tile matches first tile in graph
+assert tile_valid([(1951, 0, 0)], (2311, 0, 0), tiles, 3)
 
-# tile_map = parse_input("./20/sample.txt")
-# result = assemble(graph, list(tile_map.keys()), tile_map, math.sqrt(len(tile_map)))
 assert solve("./20/test2.txt") == 17558391313363
 assert solve("./20/sample.txt") == 20899048083289
