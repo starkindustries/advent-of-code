@@ -133,7 +133,8 @@ def tile_valid(graph, tile, tiles, length):
     return True
 
 
-def assemble(graph, tiles, length):
+def assemble(tiles, length, graph=[]):
+    # print(f"Assemble: {graph}")
     if len(graph) == length ** 2:
         return graph
 
@@ -145,7 +146,7 @@ def assemble(graph, tiles, length):
             if tile_valid(graph, tile, tiles, length):
                 new_graph = graph[:]
                 new_graph.append(tile)
-                if assemble(new_graph, tiles, length):
+                if (new_graph := assemble(tiles, length, new_graph)):
                     return new_graph
     return False  # no valid graph found
 
@@ -182,8 +183,7 @@ def solve(filename):
 
     # get length of image
     length = int(math.sqrt(len(tiles)))
-    graph = []
-    graph = assemble(graph, tiles, length)
+    graph = assemble(tiles, length)
 
     # get the product of the four corners:
     print(f"GRAPH: {graph}")
@@ -217,3 +217,4 @@ assert tile_valid([(1951, 0, 0)], (2311, 0, 0), tiles, 3)
 
 assert solve("./20/test2.txt") == 17558391313363
 assert solve("./20/sample.txt") == 20899048083289
+assert solve("./20/input.txt") == 7492183537913
