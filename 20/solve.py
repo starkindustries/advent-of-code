@@ -1,6 +1,6 @@
 import math
 import pprint
-
+import functools
 
 def print_tile(tile):
     pp = pprint.PrettyPrinter(indent=2)
@@ -47,8 +47,9 @@ def flip_tile(tile, flip):
         return rotate_tile(tile, 180)
 
 
+@functools.lru_cache(maxsize=None)
 def orient(tile, angle, flip):
-    assert flip in FLIPS and angle in ROTATIONS
+    # assert flip in FLIPS and angle in ROTATIONS
     return rotate_tile(flip_tile(tile, flip), angle)
 
 
@@ -109,7 +110,7 @@ def matches(t1, t2, tiles, horizontal):
 
 def tile_valid(graph, tile, tiles, length):
     # the tile to be checked should not already be in the graph
-    assert tile[0] not in [item[0] for item in graph]
+    # assert tile[0] not in [item[0] for item in graph]
 
     # if graph is empty, then any tile is valid
     if not graph:
@@ -164,21 +165,24 @@ def parse_input(filename):
             continue
         elif len(image) == 9:
             image.append(line)
-            tiles[tile_num] = image[:]
+            tiles[tile_num] = tuple(image)
             image = []
         elif "Tile" in line:
             tile_num = int(line.replace(':', '').split(" ")[1])
         else:
             image.append(line)
 
-    pp = pprint.PrettyPrinter(indent=2)
-    for key, image in tiles.items():
-        print(key)
-        pp.pprint(image)
+    # pp = pprint.PrettyPrinter(indent=2)
+    # for key, image in tiles.items():
+    #     print(key)
+    #     pp.pprint(image)
     return tiles
 
 
 def solve(filename):
+    # *************
+    # Part 1
+    # *************
     tiles = parse_input(filename)
 
     # get length of image
@@ -186,18 +190,26 @@ def solve(filename):
     graph = assemble(tiles, length)
 
     # get the product of the four corners:
-    print(f"GRAPH: {graph}")
+    # print(f"GRAPH: {graph}")
     if not graph:
         return False
     result = graph[0][0] * graph[length-1][0] * \
         graph[length**2-1][0] * graph[length**2-length][0]
     print(f"RESULT: {result}")
+        
+    # *************
+    # Part 2
+    # *************    
+    for num, angle, flip in graph:
+        image = orient(tiles[num], angle, flip)
+        print(image)
+
     return result
 
 
 # Test input parsing
 tiles = parse_input("./20/sample.txt")
-assert tiles[1427] == ['###.##.#..',
+assert tiles[1427] == ('###.##.#..',
                        '.#..#.##..',
                        '.#.##.#..#',
                        '#.#.#.##.#',
@@ -206,7 +218,7 @@ assert tiles[1427] == ['###.##.#..',
                        '...#.#####',
                        '.#.####.#.',
                        '..#..###.#',
-                       '..##.#..#.']
+                       '..##.#..#.')
 
 # Test tile_valid function
 # any tile is valid for empty graph
