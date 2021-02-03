@@ -1,11 +1,5 @@
 import math
-import pprint
 import functools
-
-
-def print_tile(tile):
-    pp = pprint.PrettyPrinter(indent=2)
-    pp.pprint(tile)
 
 
 ROTATIONS = [0, 90, 180, 270]
@@ -88,7 +82,6 @@ def get_orientations():
             tiles[new_tile].append((angle, flip))
     orientations = []
     for _, values in tiles.items():
-        print(f"values: {values}")
         # Ignore orientations that produce the same tile:
         orientations.append(values[0])
     return tuple(orientations)
@@ -137,7 +130,6 @@ def tile_valid(graph, tile, tiles, length):
 
 
 def assemble(tiles, length, graph=[]):
-    # print(f"Assemble: {graph}")
     if len(graph) == length ** 2:
         return graph
 
@@ -173,11 +165,6 @@ def parse_input(filename):
             tile_num = int(line.replace(':', '').split(" ")[1])
         else:
             image.append(line)
-
-    # pp = pprint.PrettyPrinter(indent=2)
-    # for key, image in tiles.items():
-    #     print(key)
-    #     pp.pprint(image)
     return tiles
 
 
@@ -190,16 +177,12 @@ def stitch(graph, tiles, length):
         # remove borders from image
         image = image[1:9]
         image = [row[1:9] for row in image]
-        print(f"img: {image}")
         if i > 0 and i % length == 0:
             # move on to next image row
             offset += 1
         for j in range(len(image)):
             stitched_image[j + offset * 8] += image[j]
 
-    print("Stitched image:")
-    for row in stitched_image:
-        print(row)
     return tuple(stitched_image)
 
 
@@ -209,8 +192,8 @@ def search_sea_dragons(image):
     dragon = ['                  # ',  # 0
               '#    ##    ##    ###',  # 1 y-axis
               ' #  #  #  #  #  #   ']  # 2
-    dragon_height = 3
-    dragon_length = 20
+    dragon_height = len(dragon)     # 3
+    dragon_length = len(dragon[0])  # 20
 
     # Gather the offsets of the dragon's body
     dragon_offsets = []
@@ -228,7 +211,6 @@ def search_sea_dragons(image):
                     is_dragon = False
                     break
             if is_dragon:
-                print(f"DRAGON FOUND AT: {row}, {col}")
                 locations.append((col, row))  # (x, y) location
     return locations
 
@@ -243,15 +225,14 @@ def solve(filename, part2=False):
     length = int(math.sqrt(len(tiles)))
     graph = assemble(tiles, length)
 
-    # get the product of the four corners:
-    # print(f"GRAPH: {graph}")
     if not graph:
         return False
-    part1 = graph[0][0] * graph[length-1][0] * \
-        graph[length**2-1][0] * graph[length**2-length][0]
-    print(f"RESULT: {part1}")
 
     if not part2:
+        # get the product of the four corners:
+        part1 = graph[0][0] * graph[length-1][0] * \
+            graph[length**2-1][0] * graph[length**2-length][0]
+        print(f"Part 1: {part1}")
         return part1
 
     # *************
@@ -264,17 +245,15 @@ def solve(filename, part2=False):
             break
     # By manually inspecting the dragon locations, none overlap.
     # Therefore, ignore edge case of overlapping dragons.
-    print(f"locations: {locations}")
-    part2 = 0
-    for row in stitched:
-        part2 += row.count('#')
-    part2 -= len(locations) * 15  # 15 is the number of dragon parts
-    print(f"PART 2: {part2}")
+    # Count the number of '#' and then subtract the number of
+    # dragons multiplied by number of dragon parts (15)
+    part2 = sum([row.count('#') for row in stitched]) - len(locations) * 15
+    print(f"Part 2: {part2}")
     return part2
 
 
 def test_input_parsing():
-    tiles = parse_input("./20/sample.txt")
+    tiles = parse_input("sample.txt")
     assert tiles[1427] == ('###.##.#..',
                            '.#..#.##..',
                            '.#.##.#..#',
@@ -288,7 +267,7 @@ def test_input_parsing():
 
 
 def test_tile_valid():
-    tiles = parse_input("./20/sample.txt")
+    tiles = parse_input("sample.txt")
 
     # any tile is valid for empty graph
     assert tile_valid([], (1427, 0, 0), tiles, 3)
@@ -298,17 +277,17 @@ def test_tile_valid():
 
 
 def test_stitch():
-    tiles = parse_input("./20/sample.txt")
+    tiles = parse_input("sample.txt")
     length = int(math.sqrt(len(tiles)))
     graph = assemble(tiles, length)
-    with open("./20/test3.txt") as handle:
+    with open("test3.txt") as handle:
         lines = [line.strip() for line in handle]
     stitched = orient(stitch(graph, tiles, length), 90, VERTICAL)
     assert stitched == tuple(lines)
 
 
 def test_search_sea_dragon():
-    with open("./20/test4.txt") as handle:
+    with open("test4.txt") as handle:
         lines = tuple([line.strip() for line in handle])
     locations = search_sea_dragons(lines)
     assert len(locations) == 2
@@ -322,10 +301,10 @@ test_stitch()
 test_search_sea_dragon()
 
 # Part 1
-assert solve("./20/test2.txt") == 17558391313363
-assert solve("./20/sample.txt") == 20899048083289
-assert solve("./20/input.txt") == 7492183537913
+assert solve("test2.txt") == 17558391313363
+assert solve("sample.txt") == 20899048083289
+assert solve("input.txt") == 7492183537913
 
 # Part 2
-assert solve("./20/sample.txt", True) == 273
-assert solve("./20/input.txt", True) == 2323
+assert solve("sample.txt", True) == 273
+assert solve("input.txt", True) == 2323
