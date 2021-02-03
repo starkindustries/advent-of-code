@@ -4,45 +4,29 @@
 filename = "input.txt"
 
 
-def passwordIsValid(min, max, key, password):
-    count = 0
-    for letter in password:
-        if key == letter:
-            count += 1
-    if min <= count <= max:
-        return True
-    return False
+def solve(filename, part2=False):
+    validPasswords = 0
+    with open(filename, 'r') as handle:
+        for line in handle:
+            a, b, c = line.strip().split(" ")
+            num1, num2 = map(int, a.split("-"))
+            key = b[0]
+            password = c
+
+            if not part2:  # Part 1
+                if num1 <= password.count(key) <= num2:
+                    validPasswords += 1
+            else:  # Part 2
+                num1 -= 1
+                num2 -= 1
+                if password[num1] == key and password[num2] != key:
+                    validPasswords += 1
+                elif password[num1] != key and password[num2] == key:
+                    validPasswords += 1
+    part = 2 if part2 else 1
+    print(f"Part {part}: {validPasswords}")
+    return validPasswords
 
 
-# part 1
-# 13-14 f: ffffffffnfffvv
-validPasswords = 0
-with open(filename, 'r') as handle:
-    for line in handle:
-        a, b, c = line.strip().split(" ")
-        min, max = map(int, a.split("-"))
-        key = b[0]
-        password = c
-
-        print(f"{min}, {max}, {key}, {password}")
-        if passwordIsValid(min, max, key, password):
-            validPasswords += 1
-print(f"Valid passwords part 1: {validPasswords}")
-
-# part 2
-validPasswords = 0
-with open(filename, 'r') as handle:
-    for line in handle:
-        a, b, c = line.strip().split(" ")
-        p1, p2 = map(int, a.split("-"))
-        key = b[0]
-        password = c
-
-        print(f"{min}, {max}, {key}, {password}")
-        p1 -= 1
-        p2 -= 1
-        if password[p1] == key and password[p2] != key:
-            validPasswords += 1
-        elif password[p1] != key and password[p2] == key:
-            validPasswords += 1
-print(f"Valid passwords part 2: {validPasswords}")
+assert solve("input.txt") == 603
+assert solve("input.txt", True) == 404
