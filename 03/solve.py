@@ -18,7 +18,7 @@ print(f"Part 1: {trees} trees")
 
 
 # part 2
-def countTreesAlongSlope(right, down):
+def count_trees_along_slope(right, down):
     x, y = 0, 0
     trees = 0
     while y < len(area):
@@ -33,7 +33,7 @@ slopes = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]]
 
 product = 1
 for r, d in slopes:
-    trees = countTreesAlongSlope(r, d)
+    trees = count_trees_along_slope(r, d)
     product *= trees
     print(f"Trees along slope[{r},{d}]: {trees}")
 print(f"Part 2: {product}")
