@@ -1,18 +1,87 @@
 
-# elves = []
 
-# filename = "input.txt"
-# with open(filename, 'r') as handle:
-#     calories = 0
-#     for line in handle:        
-#         line = line.strip()
-#         try:            
-#             calories += int(line)
-#         except Exception as e:
-#             elves.append(calories)
-#             calories = 0
-# elves.append(calories)
+# A X = rock +1
+# B Y = paper +2
+# C Z = scissors +3
+# +0 loss, +3 draw, +6 win
 
-# elves.sort(reverse=True)
-# maxcals = elves[0] + elves[1] + elves[2]
-# print("Max elf calories: ", maxcals)
+points_per_move = {
+    "X" : 1,
+    "Y" : 2,
+    "Z" : 3
+}
+
+move_conversion = {
+    "A" : "X",
+    "B" : "Y",
+    "C" : "Z",    
+}
+
+score = 0
+
+filename = "input.txt"
+with open(filename, 'r') as handle:
+    calories = 0
+    for line in handle:        
+        line = line.strip()
+        #print(line)
+        (p1, p2) = line.split(" ")
+        print(f"{p1} {p2}")
+        score += points_per_move[p2]
+        # convert p1's move to XYZ
+        p1 = move_conversion[p1]        
+        if p1 == p2:
+            score += 3
+        elif p1 == "X" and p2 == "Y":
+            score += 6
+        elif p1 == "Y" and p2 == "Z":
+            score += 6
+        elif p1 == "Z" and p2 == "X":
+            score += 6
+print("Part 1 total score: ", score)
+
+
+# Part 2
+# X lose, Y draw, Z win
+# A = rock +1
+# B = paper +2
+# C = scissors +3
+# +0 loss, +3 draw, +6 win
+points_per_move2 = {
+    "A" : 1,
+    "B" : 2,
+    "C" : 3
+}
+
+outcome_index = {
+    "X" : 0,
+    "Y" : 1,
+    "Z" : 2
+}
+
+move_to_make = {
+    # Move : [loss, draw, win]
+    "A" : ["C", "A", "B"],
+    "B" : ["A", "B", "C"],
+    "C" : ["B", "C", "A"]
+}
+
+outcome_points = {
+    "X" : 0,
+    "Y" : 3,
+    "Z" : 6
+}
+
+score2 = 0
+with open(filename, 'r') as handle:
+    calories = 0
+    for line in handle:        
+        line = line.strip()
+        (p1, p2) = line.split(" ")
+        index = outcome_index[p2]        
+        move = move_to_make[p1][index]        
+        round_score = points_per_move2[move]
+        round_score += outcome_points[p2]        
+        print(p1, " ", index, " ", move, " ", round_score)
+        score2 += round_score
+print("Part 2 total score: ", score2)
