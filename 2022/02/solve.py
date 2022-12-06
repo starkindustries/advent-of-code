@@ -21,10 +21,8 @@ score = 0
 
 filename = "input.txt"
 with open(filename, 'r') as handle:
-    calories = 0
     for line in handle:        
         line = line.strip()
-        #print(line)
         (p1, p2) = line.split(" ")
         print(f"{p1} {p2}")
         score += points_per_move[p2]
