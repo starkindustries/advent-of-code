@@ -1,6 +1,7 @@
 
 
 def build_file_system(filename):
+    print(f"Building file system for {filename}...")
     fs = {}
     with open(filename, 'r') as handle:
         # read in the first line root: "$ cd /"    
@@ -16,8 +17,7 @@ def build_file_system(filename):
                 if line[1] == "cd":
                     if line[2] == "..":
                         try:
-                            temp = dirname[:-len(current_dir)-1]
-                            dirname = temp
+                            dirname = dirname[:-len(current_dir)-1]
                             current_dir = dirname[1:-1].split("/")[-1]
                         except Exception as e:
                             print("ERROR:", e)
@@ -72,10 +72,14 @@ def solve2(folder_totals, rootsize):
 
 
 folder_totals, rootsize = build_file_system("sample.txt")
+for key, value in folder_totals.items():
+    print(key, value)
 solve1(folder_totals)
 solve2(folder_totals, rootsize)
 
 print()
 folder_totals, rootsize = build_file_system("input.txt")
+for key, value in folder_totals.items():
+    print(key, value)
 solve1(folder_totals)
 solve2(folder_totals, rootsize)
