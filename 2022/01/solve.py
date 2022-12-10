@@ -2,15 +2,15 @@
 
 def solve(filename):
     elves = []
-    with open(filename, 'r') as handle:
+    with open(filename, 'r', encoding="utf8") as handle:
         calories = 0
-        for line in handle:        
+        for line in handle:
             line = line.strip()
-            try:            
-                calories += int(line)
-            except Exception as e:
+            if line == "":
                 elves.append(calories)
                 calories = 0
+            else:
+                calories += int(line)
     elves.append(calories)
 
     # Part 1

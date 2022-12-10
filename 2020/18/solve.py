@@ -51,7 +51,7 @@ def add_then_multiply(stack):
     while i < len(stack) - 1:
         num, operand = stack[i]  # ex: i = 1, r = 4, o = '+'
         if operand in ['(', ')']:
-            raise RuntimeError(f"Unexpected operand {o} in stack: {stack} for equation: {equation}")
+            raise RuntimeError(f"Unexpected operand {operand} in stack: {stack}")
         elif operand == "+":
             num2, operand = stack.pop(i+1)    # r2 = 9, o = '*'
             stack[i] = (num + num2, operand)  # (4 + 9, *) => (13, *)        
