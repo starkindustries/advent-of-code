@@ -16,3 +16,7 @@ def helper(day):
 def test08():
     helper("08")
 
+
+def test10():
+    helper("10")
+

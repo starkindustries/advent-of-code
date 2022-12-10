@@ -1,74 +1,82 @@
 
 
-# 20th, 60th, 100th, 140th, 180th, and 220th
-def solve():
-    pass
+def solve(filename):
+    x = 1
+    history = []
+    with open(filename, 'r') as handle:
+        for line in handle:        
+            if line.strip() == "noop":
+                history.append(x)
+            else:
+                # addx
+                instruction, number = line.strip().split()
+                number = int(number)
+                history.extend([x, x])
+                x += number
 
 
-x = 1
-history = [1]
-filename = "input.txt"
-with open(filename, 'r') as handle:
-    for line in handle:        
-        if line.strip() == "noop":
-            history.append(x)
-        else:
-            # addx
-            instruction, number = line.strip().split()
-            number = int(number)
-            history.append(x)
-            x += number
-            history.append(x)
+    # 20th, 60th, 100th, 140th, 180th, and 220th
+    signals = [20, 60, 100, 140, 180, 220]
+    total_strength = 0
+    for signal in signals: 
+        strength = signal * history[signal-1]       
+        print(signal, history[signal-1], strength)
+        total_strength += strength
+    print("Signal strength:", total_strength)
+    print()
 
-# for i, h in enumerate(history):
-#     print(i, ":", h)
+    # Part 2
 
-signal_strength = 0
-signals = [20, 60, 100, 140, 180, 220]
-for signal in signals:
-    print(signal, history[signal-2])
-    signal_strength += signal * history[signal-2]
-print("Signal", signal_strength)
+    screen = []
+    screen_row = ""
+    crt_col = 0
 
-# Part 2
-
-screen = [""]*6
-crt_row = 0
-crt_col = 0
-cycle = 1
-x = 1
-
-for x in history:
-    try:
+    for x in history:
         if abs(x - crt_col) <= 1:
-            screen[crt_row] += "#"
+            screen_row += "#"
         else:
-            screen[crt_row] += "."
+            screen_row += "."
         crt_col += 1
         if crt_col == 40:
             crt_col = 0
-            crt_row += 1
-    except:
-        continue
-for line in screen:
-    print(line)
-# for index in history:
-#     if 
-
-# with open(filename, 'r') as handle:
-#     for line in handle:
-
-#         if abs(x - crt_col) <= 1:
-#             screen[crt_row] += "#"
-#         else:
-#             screen[crt_row] += "."
-        
+            screen.append(screen_row)
+            screen_row = ""
+    
+    for line in screen:
+        print(line)
+    return (total_strength, screen)
 
 
-#         if line.strip() == "noop":
-#             continue
-#         else:
-#             # addx
-#             instruction, number = line.strip().split()
-#             number = int(number)            
-#             x += number
+def is_matching(screen1, screen2):
+    assert len(screen1) == len(screen2)
+    for row1, row2 in zip(screen1, screen2):
+        assert row1 == row2
+    return True
+
+
+def test(path):
+    part2_sample = ["##..##..##..##..##..##..##..##..##..##..",
+                    "###...###...###...###...###...###...###.",
+                    "####....####....####....####....####....",
+                    "#####.....#####.....#####.....#####.....",
+                    "######......######......######......####",
+                    "#######.......#######.......#######....."]
+
+    part1, part2 = solve(path + "sample.txt")
+    assert part1 == 13140
+    assert is_matching(part2, part2_sample)
+
+    part2_input = ["####.#..#.###..####.###....##..##..#....",
+                   "#....#..#.#..#....#.#..#....#.#..#.#....",
+                   "###..####.#..#...#..#..#....#.#....#....",
+                   "#....#..#.###...#...###.....#.#.##.#....",
+                   "#....#..#.#....#....#....#..#.#..#.#....",
+                   "####.#..#.#....####.#.....##...###.####."]
+
+    part1, part2 = solve(path + "input.txt")
+    assert part1 == 12520
+    assert is_matching(part2, part2_input)    
+
+
+if __name__ == "__main__":
+    test("./")
