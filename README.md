@@ -1,6 +1,7 @@
 # Advent of Code
 
-![python workflow](https://github.com/starkindustries/advent-of-code/blob/main/.github/workflows/python-app.yml/badge.svg)
+<!-- https://github.com/orgs/community/discussions/26812 -->
+![python workflow](.github/workflows/python-app.yml)
 
 https://adventofcode.com/
 
