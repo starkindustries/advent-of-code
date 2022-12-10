@@ -1,7 +1,7 @@
 # Advent of Code
 
-<!-- https://github.com/orgs/community/discussions/26812 -->
-![python workflow](.github/workflows/python-app.yml)
+[![Python application](https://github.com/starkindustries/advent-of-code/actions/workflows/python-app.yml/badge.svg)](https://github.com/starkindustries/advent-of-code/actions/workflows/python-app.yml)
+
 
 https://adventofcode.com/
 
