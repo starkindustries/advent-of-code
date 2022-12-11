@@ -5,7 +5,7 @@ def find_marker(datastream, marker_length):
     last_matching_index = -1
     last4 = deque([])
     marker = 0
-    for char in datastream:    
+    for char in datastream:
         try:
             index = -1
             # match found at index
@@ -17,8 +17,8 @@ def find_marker(datastream, marker_length):
             if index > last_matching_index:
                 last_matching_index = index
         except Exception as e:
-            print(e, char)            
-        
+            print(e, char)
+
         last4.append(char)
         # print("TEMP", last4)
         marker += 1
@@ -28,13 +28,13 @@ def find_marker(datastream, marker_length):
         # print(char, last4, last_matching_index)
         if last_matching_index < 0 and marker >= marker_length:
             # Found start-of-packet marker
-            break 
+            break
     return marker
 
 
 def solve(filename, marker_length):
     results = []
-    with open(filename, 'r') as handle:
+    with open(filename, 'r', encoding="utf8") as handle:
         for line in handle:
             datastream = line.strip()
             result = find_marker(datastream, marker_length)

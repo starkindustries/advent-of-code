@@ -7,51 +7,49 @@ def parse_input(filename):
     get_stack = True
     columns = 0
 
-    with open(filename, 'r') as handle:
-        for line in handle:        
+    with open(filename, 'r', encoding="utf8") as handle:
+        for line in handle:
             if line.strip() == "":
                 get_stack = False
                 continue
             if get_stack:
-                try:
-                    temp = int(line[1])
+                if line[1].isdigit and line[1] == "1":
                     columns = list(map(int, line.split()))
-                    # print("Num columns:", columns[-1])
-                except Exception as e:                    
+                else:
                     temp_stacks.append(line)
             else:
                 moves.append(line)
 
     # Parse stacks
     num_columns = columns[-1]
-    stacks = [""] * num_columns # [[] for x in range(num_columns)]
+    stacks = [""] * num_columns
     stop = (num_columns - 1) * 4 + 1
 
-    for x in range(len(temp_stacks)-1, -1, -1):        
+    for x in range(len(temp_stacks)-1, -1, -1):
         # Get the boxes
         # 0123456789
         # [Z] [M] [P]
-        # 1, 5, 9, 13, 
+        # 1, 5, 9, 13,
         col = 0
-        for y in range(1, stop + 1, 4):    
-            letter = temp_stacks[x][y]    
+        for y in range(1, stop + 1, 4):
+            letter = temp_stacks[x][y]
             if letter.strip() != "":
                 stacks[col] += letter
             col += 1
-    
+
     # Parse moves
     new_moves = []
     for move in moves:
-        move = move.replace("move", "").replace(" from", "").replace(" to", "")  
+        move = move.replace("move", "").replace(" from", "").replace(" to", "")
         move = list(map(int, move.split()))
-        
+
         count = move[0]
         fr = move[1] - 1
         to = move[2] - 1
         new_moves.append([count, fr, to])
-        
+
     return (stacks, new_moves)
-    
+
 
 def solve1(stacks, moves):
     for move in moves:

@@ -3,10 +3,10 @@
 def build_file_system(filename):
     print(f"Building file system for {filename}...")
     fs = {}
-    with open(filename, 'r') as handle:
-        # read in the first line root: "$ cd /"    
+    with open(filename, 'r', encoding="utf8") as handle:
+        # read in the first line root: "$ cd /"
         assert handle.readline().strip() == "$ cd /"
-        
+
         fs["/"] = 0
         dirname = "/"
         current_dir = "/"
@@ -16,12 +16,8 @@ def build_file_system(filename):
             if line[0] == "$":
                 if line[1] == "cd":
                     if line[2] == "..":
-                        try:
-                            dirname = dirname[:-len(current_dir)-1]
-                            current_dir = dirname[1:-1].split("/")[-1]
-                        except Exception as e:
-                            print("ERROR:", e)
-                            exit()
+                        dirname = dirname[:-len(current_dir)-1]
+                        current_dir = dirname[1:-1].split("/")[-1]
                     else:
                         current_dir = line[2]
                         dirname += line[2] + "/"
@@ -32,7 +28,7 @@ def build_file_system(filename):
             elif line[0].isdigit():
                 fs.setdefault(dirname, 0)
                 fs[dirname] += int(line[0])
-    
+
     # Get folder total values:
     rootsize = 0
     folder_totals = {}
@@ -65,7 +61,7 @@ def solve2(folder_totals, rootsize):
     # print("Space unused", unused)
     # print("Space needed", needed)
     delete = []
-    for key, value in folder_totals.items():
+    for _, value in folder_totals.items():
         if value >= needed:
             delete.append(value)
     answer = min(delete)

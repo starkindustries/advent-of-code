@@ -1,9 +1,11 @@
-import math 
+import math
 
 #  1 2 3
-#1 . . .
-#2 . x .
-#3 . . .
+# 1 . . .
+# 2 . x .
+# 3 . . .
+
+
 def is_tail_touching(head, tail):
     if head[0] - tail[0] == 0 and abs(head[1] - tail[1]) <= 1:
         return True
@@ -40,24 +42,24 @@ def get_new_tail_position(head, tail):
         tail[1] += 1
     else:
         tail[1] -= 1
-    return tail.copy()    
-    # temp = [int(math.ceil((head[0] + tail[0]) / 2)), int(math.ceil((head[1] + tail[1]) / 2))]    
+    return tail.copy()
+    # temp = [int(math.ceil((head[0] + tail[0]) / 2)), int(math.ceil((head[1] + tail[1]) / 2))]
 
 
 def print_map(rope):
-    map = ["*" * 35] * 35
+    mymap = ["*" * 35] * 35
     offset = 17
     for i, knot in enumerate(rope):
         x, y = knot[0] + offset, knot[1] + offset
-        map[y] = map[y][:x] + str(i) + map[y][x+1:]
-    for line in reversed(map):
+        mymap[y] = mymap[y][:x] + str(i) + mymap[y][x+1:]
+    for line in reversed(mymap):
         print(line)
     print()
 
 
 def solve(filename):
     moves = []
-    with open(filename, 'r') as handle:
+    with open(filename, 'r', encoding="utf8") as handle:
         for line in handle:
             move = line.strip().split(" ")
             moves.append(move)
@@ -77,14 +79,14 @@ def solve(filename):
         if direction == "U" or direction == "D":
             index = 1
         if direction == "L" or direction == "D":
-            step = -1        
+            step = -1
         for i in range(count):
             prev_head_pos = head_pos.copy()
             head_pos[index] += step
             if not is_tail_touching(head_pos, tail_pos):
                 tail_pos = prev_head_pos.copy()
                 tail_path.append(tuple(tail_pos))
-                #print("tail",tail_path)
+                # print("tail",tail_path)
 
     unique_positions = set()
     print(tail_path)
@@ -92,12 +94,12 @@ def solve(filename):
         unique_positions.add(pos)
     part1 = len(unique_positions)
     print("PART 1", part1)
-    
+
     # PART 2
     print("*** PART 2")
     num_knots = 10
     tail_path = [(0, 0)]
-    rope = [[0,0] for x in range(num_knots)]
+    rope = [[0, 0] for x in range(num_knots)]
     for move in moves:
         direction = move[0]
         count = int(move[1])
@@ -113,20 +115,21 @@ def solve(filename):
             rope[0][index] += delta
             # Apply updates to rest of rope
             for knot_index in range(num_knots - 1):
-                if is_tail_touching(rope[knot_index], rope[knot_index+1]):            
+                if is_tail_touching(rope[knot_index], rope[knot_index+1]):
                     break
                 # if not touching, update position
-                rope[knot_index + 1] = get_new_tail_position(rope[knot_index], rope[knot_index + 1])
+                rope[knot_index + 1] = get_new_tail_position(
+                    rope[knot_index], rope[knot_index + 1])
                 #rope_prev[knot_index+1] = rope[knot_index+1].copy()
                 #rope[knot_index+1] = rope_prev[knot_index].copy()
                 if knot_index + 1 == num_knots - 1:
                     tail_path.append(tuple(rope[knot_index + 1]))
-            #print(rope)
-            #print_map(rope)        
+            # print(rope)
+            # print_map(rope)
             pause = 0
 
     unique_positions = set()
-    print("tail path",tail_path)
+    print("tail path", tail_path)
     for pos in tail_path:
         unique_positions.add(pos)
     part2 = len(unique_positions)
