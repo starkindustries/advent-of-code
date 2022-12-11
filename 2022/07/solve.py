@@ -54,6 +54,7 @@ def solve1(folder_totals):
         if value <= 100000:
             answer += value
     print("Part 1", answer)
+    return answer
 
 
 def solve2(folder_totals, rootsize):
@@ -69,17 +70,20 @@ def solve2(folder_totals, rootsize):
             delete.append(value)
     answer = min(delete)
     print("Part 2", answer)
+    return answer
 
 
-folder_totals, rootsize = build_file_system("sample.txt")
-for key, value in folder_totals.items():
-    print(key, value)
-solve1(folder_totals)
-solve2(folder_totals, rootsize)
+def test(path):
+    folder_totals, rootsize = build_file_system(path + "sample.txt")
+    for key, value in folder_totals.items():
+        print(key, value)
+    assert solve1(folder_totals) == 95437
+    assert solve2(folder_totals, rootsize) == 24933642
 
-print()
-folder_totals, rootsize = build_file_system("input.txt")
-for key, value in folder_totals.items():
-    print(key, value)
-solve1(folder_totals)
-solve2(folder_totals, rootsize)
+    folder_totals, rootsize = build_file_system(path + "input.txt")
+    assert solve1(folder_totals) == 1334506
+    assert solve2(folder_totals, rootsize) == 7421137
+
+
+if __name__ == "__main__":
+    test("./")

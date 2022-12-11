@@ -1,8 +1,7 @@
 from collections import deque
 
 
-# Part 1
-def solve(datastream, charlen):
+def find_marker(datastream, marker_length):
     last_matching_index = -1
     last4 = deque([])
     marker = 0
@@ -18,36 +17,44 @@ def solve(datastream, charlen):
             if index > last_matching_index:
                 last_matching_index = index
         except Exception as e:
-            print(e, char)
-            
+            print(e, char)            
+        
         last4.append(char)
         # print("TEMP", last4)
         marker += 1
-        if len(last4) > charlen:
+        if len(last4) > marker_length:
             last4.popleft()
             last_matching_index -= 1
         # print(char, last4, last_matching_index)
-        if last_matching_index < 0 and marker >= charlen:
+        if last_matching_index < 0 and marker >= marker_length:
             # Found start-of-packet marker
             break 
     return marker
 
 
-filename = "sample.txt"
-with open(filename, 'r') as handle:
-    for line in handle:
-        datastream = line.strip()
-        result = solve(datastream, 14)
-        print("Part 1 sample:", result)
+def solve(filename, marker_length):
+    results = []
+    with open(filename, 'r') as handle:
+        for line in handle:
+            datastream = line.strip()
+            result = find_marker(datastream, marker_length)
+            results.append(result)
+            print("Part 1 sample:", result)
+    return results
 
 
-filename = "input.txt"
-with open(filename, 'r') as handle:
-    for line in handle:
-        datastream = line.strip()
-        result = solve(datastream, 14)
-        print("Part 1 input:", result)
-        break
+def test(path):
+    part1 = solve(path + "sample.txt", 4)
+    part2 = solve(path + "sample.txt", 14)
+    assert part1 == [7, 5, 6, 10, 11]
+    assert part2 == [19, 23, 23, 29, 26]
+
+    part1 = solve(path + "input.txt", 4)
+    part2 = solve(path + "input.txt", 14)
+    assert len(part1) == len(part2) == 1
+    assert part1 == [1623]
+    assert part2 == [3774]
 
 
-# Part 2
+if __name__ == "__main__":
+    test("./")

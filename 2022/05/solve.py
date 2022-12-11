@@ -86,12 +86,17 @@ def solve2(stacks, moves):
     return answer
 
 
-stacks, moves = parse_input("sample.txt")
-stacks2 = stacks.copy()
-assert solve1(stacks, moves) == "CMZ"
-assert solve2(stacks2, moves) == "MCD"
+def test(path):
+    stacks, moves = parse_input(path + "sample.txt")
+    stacks2 = stacks.copy()
+    assert solve1(stacks, moves) == "CMZ"
+    assert solve2(stacks2, moves) == "MCD"
 
-stacks, moves = parse_input("input.txt")
-stacks2 = stacks.copy()
-assert solve1(stacks, moves) == "DHBJQJCCW"
-assert solve2(stacks2, moves) == "WJVRLSJJT"
+    stacks, moves = parse_input(path + "input.txt")
+    stacks2 = stacks.copy()
+    assert solve1(stacks, moves) == "DHBJQJCCW"
+    assert solve2(stacks2, moves) == "WJVRLSJJT"
+
+
+if __name__ == "__main__":
+    test("./")
