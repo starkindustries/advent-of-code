@@ -71,3 +71,6 @@ def test09():
 def test10():
     helper("10")
 
+
+def test11():
+    helper("11")
