@@ -740,6 +740,7 @@ def solve2():
     # combined.sort(key=is_in_order)
     # combined.sort(key=is_in_order)
     print(combined)
+    # https://stackoverflow.com/a/46320068/2179970
     combined = sorted(combined, key=functools.cmp_to_key(is_in_order))
     print()
     answer = 1
