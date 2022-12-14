@@ -3,7 +3,7 @@
 import sys
 
 filename = "input.txt"
-fileObject  = open(filename, "r")
+fileObject = open(filename, "r")
 
 changeArray = fileObject.read().splitlines()
 
@@ -12,7 +12,7 @@ frequency = 0
 print("PART 1")
 for change in changeArray:
     sign = change[0]
-    
+
     if sign == '+':
         frequency += int(change[1:])
     elif sign == '-':
@@ -23,33 +23,36 @@ print("Final frequency: " + str(frequency))
 print("PART 2")
 frequency = 0
 freqArray = [0]
+frequencies = set()
 duplicateFound = False
 numTimesLooped = 0
 
-print("First duplicate: 390")
-print("Array length: 138573")
-print("Number of times looped through input: 137")
+#print("First duplicate: 390")
+#print("Array length: 138573")
+#print("Number of times looped through input: 137")
 
 while not duplicateFound:
     for change in changeArray:
         sign = change[0]
-        
         if sign == '+':
             frequency += int(change[1:])
         elif sign == '-':
             frequency -= int(change[1:])
-                
-        message = "[{}, {}, {}]".format(frequency, len(freqArray), numTimesLooped)
-        sys.stdout.write("\r"+message)
-        sys.stdout.flush()
 
-        if frequency in freqArray:
-            print("Match found [freq, #list-items, #loops]: " + message)
+        if frequency in frequencies:
+            print("MATCH FOUND", frequency)
             duplicateFound = True
             break
-        freqArray.append(frequency)
+        frequencies.add(frequency)
 
+        # message = "[{}, {}, {}]".format(
+        #     frequency, len(freqArray), numTimesLooped)
+        # sys.stdout.write("\r"+message)
+        # sys.stdout.flush()
+
+        # if frequency in freqArray:
+        #     print("Match found [freq, #list-items, #loops]: " + message)
+        #     duplicateFound = True
+        #     break
+        # freqArray.append(frequency)
     numTimesLooped += 1
-
-
-
