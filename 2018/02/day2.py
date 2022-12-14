@@ -3,7 +3,7 @@
 import sys
 
 filename = "input.txt"
-fileObject  = open(filename, "r")
+fileObject = open(filename, "r")
 boxIds = fileObject.read().splitlines()
 
 doubleCount = 0
@@ -28,6 +28,7 @@ print("Part 1. Checksum: ", checksum)
 
 print("Part 2. Find boxes that differ by just one character.")
 
+
 def doesDiffByOneCharacter(a, b):
     diffCount = 0
     differentCharIndex = -1
@@ -36,14 +37,15 @@ def doesDiffByOneCharacter(a, b):
             diffCount += 1
             differentCharIndex = i
         if diffCount > 1:
-            # To write a tuple containing a single value you have to include a comma, 
+            # To write a tuple containing a single value you have to include a comma,
             # even though there is only one value:
             return (False,)
     # https://www.tutorialspoint.com/python/python_tuples.htm
     return (True, differentCharIndex)
 
+
 start = 0
-stop = len(boxIds)-1 # stop at the second to last item
+stop = len(boxIds)-1  # stop at the second to last item
 step = 1
 # Classic for-loop in python:
 for i in range(start, stop, step):
@@ -53,14 +55,14 @@ for i in range(start, stop, step):
         boxA = boxIds[i]
         boxB = boxIds[j]
         # print("Comparing: {} and {}".format(boxA, boxB))
-        result = doesDiffByOneCharacter(boxA, boxB)        
-        if result[0]: # result[0] is a boolean
+        result = doesDiffByOneCharacter(boxA, boxB)
+        if result[0]:  # result[0] is a boolean
             diffIndex = result[1]
-            print("[{}] and [{}] differ by one char at index {}.".format(boxA, boxB, diffIndex))
+            print("[{}] and [{}] differ by one char at index {}.".format(
+                boxA, boxB, diffIndex))
             print("_BoxA: {}".format(boxA))
             print("_BoxB: {}".format(boxB))
             print("Share: {} {}".format(boxA[:diffIndex], boxA[diffIndex+1:]))
+            print("PART2 ANSWER: {}{}".format(
+                boxA[:diffIndex], boxA[diffIndex+1:]))
             break
-
-
-
