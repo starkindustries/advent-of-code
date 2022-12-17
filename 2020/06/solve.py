@@ -1,4 +1,3 @@
-
 def processAnswers(input, group):
     # input is one person's answers
     # group is the set of 'yes' answers
@@ -7,7 +6,7 @@ def processAnswers(input, group):
 
 
 yesTotal = 0
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     group = set()
     for line in handle:
         line = line.strip()
@@ -41,7 +40,7 @@ def getYesCount(group, groupCount):
 
 
 yesTotal = 0
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     group = {}
     groupCount = 0
     for line in handle:

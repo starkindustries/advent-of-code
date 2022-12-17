@@ -1,4 +1,3 @@
-
 DEBUG = False
 
 # Pre-compute the powers of 2's
@@ -69,7 +68,7 @@ assert applyBitmask(0, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 64
 filename = "input.txt"
 # filename = "sample.txt"
 
-with open(filename, 'r') as handle:
+with open(filename, "r") as handle:
     program = [line.strip() for line in handle]
 # print(program)
 
@@ -128,15 +127,22 @@ def applyBitmaskV2(decimal, mask):
     return sorted(results)
 
 
-assert applyBitmaskV2(42, "000000000000000000000000000000X1001X") == [
-    26, 27, 58, 59]
+assert applyBitmaskV2(42, "000000000000000000000000000000X1001X") == [26, 27, 58, 59]
 assert applyBitmaskV2(26, "00000000000000000000000000000000X0XX") == [
-    16, 17, 18, 19, 24, 25, 26, 27]
+    16,
+    17,
+    18,
+    19,
+    24,
+    25,
+    26,
+    27,
+]
 
 filename = "input.txt"
 # filename = "sample2.txt"
 
-with open(filename, 'r') as handle:
+with open(filename, "r") as handle:
     program = [line.strip() for line in handle]
 
 # Run program

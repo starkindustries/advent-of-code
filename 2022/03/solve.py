@@ -14,10 +14,10 @@ def solve(filename):
 
     priority_score = 0
 
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         for line in handle:
             rucksack = line.strip()
-            half_len = int(len(rucksack)/2)
+            half_len = int(len(rucksack) / 2)
             one = rucksack[:half_len]
             two = rucksack[half_len:]
 
@@ -35,7 +35,7 @@ def solve(filename):
     # Part 2
     score2 = 0
 
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         group_member = 0
         # { 'letter' : [x, y, z]}
         # x, y, z should each be set to true to test if all elves have item

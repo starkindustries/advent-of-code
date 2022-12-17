@@ -48,10 +48,9 @@ for i in range(len(xmasData)):
     while contiguousSum < invalidNumber and (i + j) < len(xmasData):
         contiguousSum += xmasData[i + j]
         if contiguousSum == invalidNumber:
-            contiguousSet = xmasData[i:i+j+1]
+            contiguousSet = xmasData[i : i + j + 1]
             print("Found contiguous set!")
             print(contiguousSet)
-            print(
-                f"Encryption weakness: {min(contiguousSet) + max(contiguousSet)}")
+            print(f"Encryption weakness: {min(contiguousSet) + max(contiguousSet)}")
             exit()
         j += 1

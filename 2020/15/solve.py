@@ -21,12 +21,14 @@ def solve(puzzle_input, target):
             # the next number to speak is the difference between the turn number when it
             # was last spoken (the previous turn, 4) and the turn number of the time it
             # was most recently spoken before then (turn 1)."
-            last_spoken = spoken_record[last_spoken][-1] - \
-                spoken_record[last_spoken][-2]
+            last_spoken = (
+                spoken_record[last_spoken][-1] - spoken_record[last_spoken][-2]
+            )
             spoken_record.setdefault(last_spoken, []).append(turn)
         elif last_spoken not in spoken_record:
             print(
-                f"ERROR: last_spoken {last_spoken} not found in record: {spoken_record}")
+                f"ERROR: last_spoken {last_spoken} not found in record: {spoken_record}"
+            )
         else:
             print("ERROR: unknown error occurred in solve() function")
         turn += 1

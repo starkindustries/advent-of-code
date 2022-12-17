@@ -11,7 +11,7 @@ with open(filename, "r") as handle:
 
 adapters.append(0)
 adapters.sort()
-deviceJolts = adapters[len(adapters)-1] + 3
+deviceJolts = adapters[len(adapters) - 1] + 3
 adapters.append(deviceJolts)
 
 # part 1
@@ -23,9 +23,9 @@ gapsToCombos = {2: 2, 3: 4, 4: 7}
 last3DiffIndex = 0
 numCombos = 1
 
-for i in range(len(adapters)-1):
+for i in range(len(adapters) - 1):
     # For part 1
-    diff = adapters[i+1] - adapters[i]
+    diff = adapters[i + 1] - adapters[i]
     diffCount[diff] = diffCount.get(diff, 0) + 1
 
     # For part 2
@@ -37,8 +37,7 @@ for i in range(len(adapters)-1):
             try:
                 numCombos *= gapsToCombos[oneGap]
             except:
-                print(
-                    f"Error: no key found in gapsToCombos for 1-gap of: {oneGap}")
+                print(f"Error: no key found in gapsToCombos for 1-gap of: {oneGap}")
                 print(f"gapsToCombos: {gapsToCombos}")
                 exit()
         # Update the last 3-diff index

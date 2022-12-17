@@ -1,5 +1,3 @@
-
-
 # Part 1
 def parse_input(filename):
     temp_stacks = []
@@ -7,7 +5,7 @@ def parse_input(filename):
     get_stack = True
     columns = 0
 
-    with open(filename, 'r', encoding="utf8") as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         for line in handle:
             if line.strip() == "":
                 get_stack = False
@@ -25,7 +23,7 @@ def parse_input(filename):
     stacks = [""] * num_columns
     stop = (num_columns - 1) * 4 + 1
 
-    for x in range(len(temp_stacks)-1, -1, -1):
+    for x in range(len(temp_stacks) - 1, -1, -1):
         # Get the boxes
         # 0123456789
         # [Z] [M] [P]

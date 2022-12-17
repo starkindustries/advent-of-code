@@ -26,17 +26,18 @@
 # nw: x-1, y+1
 # ne: x+1, y+1
 
+
 def parse_directions(line):
     x, y, i = 0, 0, 0
     while i < len(line):
         is_cardinal = True
-        if line[i] in ['n', 's']:
-            y += -1 if line[i] == 's' else 1
+        if line[i] in ["n", "s"]:
+            y += -1 if line[i] == "s" else 1
             i += 1
             is_cardinal = False
-        if line[i] in ['e', 'w']:
+        if line[i] in ["e", "w"]:
             offset = 1 + is_cardinal
-            x += -offset if line[i] == 'w' else offset
+            x += -offset if line[i] == "w" else offset
         i += 1
     return x, y
 
@@ -44,35 +45,35 @@ def parse_directions(line):
 def get_adj_tiles(x, y, black_tiles):
     # East
     black, white = set(), set()
-    if (x+2, y) in black_tiles:
-        black.add((x+2, y))
+    if (x + 2, y) in black_tiles:
+        black.add((x + 2, y))
     else:
-        white.add((x+2, y))
+        white.add((x + 2, y))
     # West
-    if (x-2, y) in black_tiles:
-        black.add((x-2, y))
+    if (x - 2, y) in black_tiles:
+        black.add((x - 2, y))
     else:
-        white.add((x-2, y))
+        white.add((x - 2, y))
     # NorthEast
-    if (x+1, y+1) in black_tiles:
-        black.add((x+1, y+1))
+    if (x + 1, y + 1) in black_tiles:
+        black.add((x + 1, y + 1))
     else:
-        white.add((x+1, y+1))
+        white.add((x + 1, y + 1))
     # NorthWest
-    if (x-1, y+1) in black_tiles:
-        black.add((x-1, y+1))
+    if (x - 1, y + 1) in black_tiles:
+        black.add((x - 1, y + 1))
     else:
-        white.add((x-1, y+1))
+        white.add((x - 1, y + 1))
     # SouthEast
-    if (x+1, y-1) in black_tiles:
-        black.add((x+1, y-1))
+    if (x + 1, y - 1) in black_tiles:
+        black.add((x + 1, y - 1))
     else:
-        white.add((x+1, y-1))
+        white.add((x + 1, y - 1))
     # SouthWest
-    if (x-1, y-1) in black_tiles:
-        black.add((x-1, y-1))
+    if (x - 1, y - 1) in black_tiles:
+        black.add((x - 1, y - 1))
     else:
-        white.add((x-1, y-1))
+        white.add((x - 1, y - 1))
     return black, white
 
 

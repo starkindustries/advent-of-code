@@ -22,8 +22,7 @@ def simulate_cycle(states, dimensions):
 
     coordinate_ranges = []
     for i in range(dimensions):
-        temp = list(
-            range(min(coordinate_values[i])-1, max(coordinate_values[i])+2))
+        temp = list(range(min(coordinate_values[i]) - 1, max(coordinate_values[i]) + 2))
         coordinate_ranges.append(temp)
 
     # https://stackoverflow.com/questions/3034014/how-to-apply-itertools-product-to-elements-of-a-list-of-lists
@@ -55,7 +54,7 @@ def simulate_cycle(states, dimensions):
 
 
 def parse_input(filename, dimensions):
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         puzzle_input = [line.strip() for line in handle]
     # for p in puzzle_input:
     #     print(p)
@@ -87,7 +86,7 @@ def solve(filename, dimensions):
 # Part 1
 # *****************
 part1_result1 = solve("sample.txt", 3)
-part1_result2 = solve('input.txt', 3)
+part1_result2 = solve("input.txt", 3)
 
 assert part1_result1 == 112
 assert part1_result2 == 362
@@ -98,7 +97,7 @@ print(f"Part 1: {part1_result2} active states")
 # Part 2
 # *****************
 part2_result1 = solve("sample.txt", 4)
-part2_result2 = solve('input.txt', 4)
+part2_result2 = solve("input.txt", 4)
 
 assert part2_result1 == 848
 assert part2_result2 == 1980

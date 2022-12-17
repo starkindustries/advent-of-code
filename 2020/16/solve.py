@@ -3,20 +3,23 @@ DEBUG = False
 
 def parse_input(filename):
     puzzle_input = []
-    with open(filename, 'r') as handle:
-        puzzle_input = [line.strip() for line in handle if line.strip() != '']
+    with open(filename, "r") as handle:
+        puzzle_input = [line.strip() for line in handle if line.strip() != ""]
 
     ticket_index = puzzle_input.index("your ticket:")
 
     rules = {}
     for r in puzzle_input[0:ticket_index]:
         name, ranges = r.split(":")
-        ranges = [list(map(int, ticket_range.split("-")))
-                  for ticket_range in ranges.split(" or ")]
+        ranges = [
+            list(map(int, ticket_range.split("-")))
+            for ticket_range in ranges.split(" or ")
+        ]
         rules[name] = ranges
-    ticket_info = [int(n) for n in puzzle_input[ticket_index+1].split(",")]
-    nearby_tickets = [list(map(int, ticket.split(",")))
-                      for ticket in puzzle_input[ticket_index+3:]]
+    ticket_info = [int(n) for n in puzzle_input[ticket_index + 1].split(",")]
+    nearby_tickets = [
+        list(map(int, ticket.split(","))) for ticket in puzzle_input[ticket_index + 3 :]
+    ]
 
     if DEBUG:
         print(f"ticket index: {ticket_index}")
@@ -25,6 +28,7 @@ def parse_input(filename):
         print(f"nearby: {nearby_tickets}")
 
     return rules, ticket_info, nearby_tickets
+
 
 # Check if the target 'n' is valid for any of the given rules
 
@@ -46,6 +50,7 @@ def solve_part1(filename):
             if not test_rules(n, rules):
                 error_rate += n
     return error_rate
+
 
 # rules 0, 1, 2
 # rules: {'class': [[ 1,  3], [ 5,  7]],
@@ -126,7 +131,8 @@ def solve_part2(filename):
             solution *= my_ticket[ticket_index]
             if DEBUG:
                 print(
-                    f"{keys[rule_index]}: {my_ticket[ticket_index]}. solution: {solution}")
+                    f"{keys[rule_index]}: {my_ticket[ticket_index]}. solution: {solution}"
+                )
     return solution
 
 

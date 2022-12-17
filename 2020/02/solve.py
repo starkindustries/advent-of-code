@@ -6,7 +6,7 @@ filename = "input.txt"
 
 def solve(filename, part2=False):
     validPasswords = 0
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         for line in handle:
             a, b, c = line.strip().split(" ")
             num1, num2 = map(int, a.split("-"))

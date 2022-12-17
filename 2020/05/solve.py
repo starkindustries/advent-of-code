@@ -1,4 +1,3 @@
-
 # 0123 4567
 # 0000 0000
 # RRR
@@ -29,7 +28,7 @@ def getSeatID(seatCode):
 
 maxSeatID = -1
 seatList = []
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     for line in handle:
         seatCode = line.strip()
         seatID = getSeatID(seatCode)

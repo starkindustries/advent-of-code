@@ -1,6 +1,4 @@
-
-
-def is_visible(row, col, map):    
+def is_visible(row, col, map):
     tree = map[row][col]
     # check left
     i = col - 1
@@ -30,27 +28,27 @@ def is_visible(row, col, map):
         i -= 1
     if visible:
         return True
-    # down 
+    # down
     i = row + 1
     visible = True
     while i < len(map):
         if map[i][col] >= tree:
             visible = False
-        i += 1    
+        i += 1
     if visible:
         return True
     return False
 
 
-def scenic_score(row, col, map):    
+def scenic_score(row, col, map):
     left = 0
     tree = map[row][col]
-    # check left    
+    # check left
     i = col - 1
     visible = True
     while i >= 0:
         left += 1
-        if map[row][i] >= tree:            
+        if map[row][i] >= tree:
             break
         i -= 1
     # check right
@@ -58,7 +56,7 @@ def scenic_score(row, col, map):
     i = col + 1
     while i < len(map[0]):
         right += 1
-        if map[row][i] >= tree:            
+        if map[row][i] >= tree:
             break
         i += 1
     # up
@@ -66,7 +64,7 @@ def scenic_score(row, col, map):
     i = row - 1
     while i >= 0:
         up += 1
-        if map[i][col] >= tree:            
+        if map[i][col] >= tree:
             break
         i -= 1
     # down
@@ -80,12 +78,12 @@ def scenic_score(row, col, map):
     score = left * right * up * down
     # print(row, col, score)
     return score
-    
+
 
 def solve(filename):
     # Parse input
     trees = []
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         for line in handle:
             line = line.strip()
             tree_line = [int(x) for x in line]
@@ -93,8 +91,8 @@ def solve(filename):
 
     # Part 1
     num_visible = 0
-    for row in range(1, len(trees)-1, 1):
-        for col in range(1, len(trees[0])-1, 1):
+    for row in range(1, len(trees) - 1, 1):
+        for col in range(1, len(trees[0]) - 1, 1):
             if is_visible(row, col, trees):
                 num_visible += 1
     num_visible += len(trees) * 2 + len(trees[0]) * 2 - 4

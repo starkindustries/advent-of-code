@@ -1,4 +1,5 @@
 import copy
+
 # import sys
 # sys.setrecursionlimit(1500)
 
@@ -67,11 +68,12 @@ def is_right_path_shorter(left, right):
 #         return old_path
 #     return None
 
+
 def get_neighbors(position, heightmap):
     x, y = position
     num_rows = len(heightmap)
     num_cols = len(heightmap[0])
-    possible_neighbors = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+    possible_neighbors = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
     neighbors = []
     for neighbor in possible_neighbors:
         if not (0 <= neighbor[0] < num_cols and 0 <= neighbor[1] < num_rows):
@@ -97,8 +99,12 @@ def bfs_search(start, heightmap, part1=True):
     while queue:
         node = queue.pop(0)
         node_x, node_y = node
-        neighbors = [(node_x-1, node_y), (node_x+1, node_y),
-                     (node_x, node_y-1), (node_x, node_y+1)]
+        neighbors = [
+            (node_x - 1, node_y),
+            (node_x + 1, node_y),
+            (node_x, node_y - 1),
+            (node_x, node_y + 1),
+        ]
         for neighbor in neighbors:
             if not (0 <= neighbor[0] < num_cols and 0 <= neighbor[1] < num_rows):
                 continue
@@ -120,7 +126,7 @@ def solve(filename):
     start_position = (0, 0)
     a_positions = set()
 
-    with open(filename, 'r', encoding='utf8') as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         for y, line in enumerate(handle):
             line = line.strip()
             row = []
@@ -170,7 +176,7 @@ def solve(filename):
     # Part 2
 
     # distances2 = bfs_search(end_position, heightmap)
-    min_distance = float('inf')
+    min_distance = float("inf")
     for a_pos in a_positions:
         distances = bfs_search(a_pos, heightmap)
         endx, endy = end_position

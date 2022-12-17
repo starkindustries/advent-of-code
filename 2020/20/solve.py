@@ -14,8 +14,8 @@ def rotate_tile(tile, angle):
     if angle == 90:
         new_tile = []
         for col in range(length):
-            new_row = ''
-            for row in range(length-1, -1, -1):
+            new_row = ""
+            for row in range(length - 1, -1, -1):
                 new_row += tile[row][col]
             new_tile.append(new_row)
         return tuple(new_tile)
@@ -24,8 +24,8 @@ def rotate_tile(tile, angle):
         return tuple(reversed([row[::-1] for row in tile]))
     if angle == 270:
         new_tile = []
-        for col in range(length-1, -1, -1):
-            new_row = ''
+        for col in range(length - 1, -1, -1):
+            new_row = ""
             for row in range(length):
                 new_row += tile[row][col]
             new_tile.append(new_row)
@@ -62,16 +62,17 @@ def orient(tile, angle, flip):
 # 8: [(270, 1), (90, 2)]
 def get_orientations():
     tile1427 = (
-        '###.##.#..',
-        '.#..#.##..',
-        '.#.##.#..#',
-        '#.#.#.##.#',
-        '....#...##',
-        '...##..##.',
-        '...#.#####',
-        '.#.####.#.',
-        '..#..###.#',
-        '..##.#..#.')
+        "###.##.#..",
+        ".#..#.##..",
+        ".#.##.#..#",
+        "#.#.#.##.#",
+        "....#...##",
+        "...##..##.",
+        "...#.#####",
+        ".#.####.#.",
+        "..#..###.#",
+        "..##.#..#.",
+    )
     tiles = {}
     for flip in FLIPS:
         for angle in ROTATIONS:
@@ -130,7 +131,7 @@ def tile_valid(graph, tile, tiles, length):
 
 
 def assemble(tiles, length, graph=[]):
-    if len(graph) == length ** 2:
+    if len(graph) == length**2:
         return graph
 
     for num in tiles.keys():
@@ -141,13 +142,13 @@ def assemble(tiles, length, graph=[]):
             if tile_valid(graph, tile, tiles, length):
                 new_graph = graph[:]
                 new_graph.append(tile)
-                if (new_graph := assemble(tiles, length, new_graph)):
+                if new_graph := assemble(tiles, length, new_graph):
                     return new_graph
     return False  # no valid graph found
 
 
 def parse_input(filename):
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         lines = handle.readlines()
 
     tiles = {}  # tiles[num] = [image rows]
@@ -162,14 +163,14 @@ def parse_input(filename):
             tiles[tile_num] = tuple(image)
             image = []
         elif "Tile" in line:
-            tile_num = int(line.replace(':', '').split(" ")[1])
+            tile_num = int(line.replace(":", "").split(" ")[1])
         else:
             image.append(line)
     return tiles
 
 
 def stitch(graph, tiles, length):
-    stitched_image = [''] * 8 * length
+    stitched_image = [""] * 8 * length
     offset = 0
     for i, tile in enumerate(graph):
         num, angle, flip = tile
@@ -189,17 +190,19 @@ def stitch(graph, tiles, length):
 def search_sea_dragons(image):
     #          00000000001111111111 x-axis
     #          01234567890123456789
-    dragon = ['                  # ',  # 0
-              '#    ##    ##    ###',  # 1 y-axis
-              ' #  #  #  #  #  #   ']  # 2
-    dragon_height = len(dragon)     # 3
+    dragon = [
+        "                  # ",  # 0
+        "#    ##    ##    ###",  # 1 y-axis
+        " #  #  #  #  #  #   ",
+    ]  # 2
+    dragon_height = len(dragon)  # 3
     dragon_length = len(dragon[0])  # 20
 
     # Gather the offsets of the dragon's body
     dragon_offsets = []
     for y in range(dragon_height):
         for x in range(dragon_length):
-            if dragon[y][x] == '#':
+            if dragon[y][x] == "#":
                 dragon_offsets.append((x, y))
 
     locations = []
@@ -207,7 +210,7 @@ def search_sea_dragons(image):
         for col in range(len(image) - dragon_length + 1):
             is_dragon = True
             for x, y in dragon_offsets:
-                if image[row+y][col+x] != '#':
+                if image[row + y][col + x] != "#":
                     is_dragon = False
                     break
             if is_dragon:
@@ -230,8 +233,12 @@ def solve(filename, part2=False):
 
     if not part2:
         # get the product of the four corners:
-        part1 = graph[0][0] * graph[length-1][0] * \
-            graph[length**2-1][0] * graph[length**2-length][0]
+        part1 = (
+            graph[0][0]
+            * graph[length - 1][0]
+            * graph[length**2 - 1][0]
+            * graph[length**2 - length][0]
+        )
         print(f"Part 1: {part1}")
         return part1
 
@@ -247,23 +254,25 @@ def solve(filename, part2=False):
     # Therefore, ignore edge case of overlapping dragons.
     # Count the number of '#' and then subtract the number of
     # dragons multiplied by number of dragon parts (15)
-    part2 = sum([row.count('#') for row in stitched]) - len(locations) * 15
+    part2 = sum([row.count("#") for row in stitched]) - len(locations) * 15
     print(f"Part 2: {part2}")
     return part2
 
 
 def test_input_parsing():
     tiles = parse_input("sample.txt")
-    assert tiles[1427] == ('###.##.#..',
-                           '.#..#.##..',
-                           '.#.##.#..#',
-                           '#.#.#.##.#',
-                           '....#...##',
-                           '...##..##.',
-                           '...#.#####',
-                           '.#.####.#.',
-                           '..#..###.#',
-                           '..##.#..#.')
+    assert tiles[1427] == (
+        "###.##.#..",
+        ".#..#.##..",
+        ".#.##.#..#",
+        "#.#.#.##.#",
+        "....#...##",
+        "...##..##.",
+        "...#.#####",
+        ".#.####.#.",
+        "..#..###.#",
+        "..##.#..#.",
+    )
 
 
 def test_tile_valid():

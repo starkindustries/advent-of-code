@@ -1,8 +1,7 @@
-
 n = []
 
 filename = "input.txt"
-with open(filename, 'r') as handle:
+with open(filename, "r") as handle:
     for line in handle:
         n.append(int(line))
 

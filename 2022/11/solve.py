@@ -1,5 +1,3 @@
-
-
 #
 # Sample monkey data:
 # monkey {
@@ -52,7 +50,7 @@ def simulate_monkey(index, monkeys, rounds, lcm):
 
 def solve(filename, rounds):
     monkeys = []
-    with open(filename, 'r', encoding="utf8") as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         while True:
             # monkey index
             line = handle.readline()

@@ -10,7 +10,7 @@ def find_marker(datastream, marker_length):
             index = -1
             # match found at index
             # this index needs to get dropped off
-            for i in range(len(last4)-1, -1, -1):
+            for i in range(len(last4) - 1, -1, -1):
                 if last4[i] == char:
                     index = i
                     break
@@ -34,7 +34,7 @@ def find_marker(datastream, marker_length):
 
 def solve(filename, marker_length):
     results = []
-    with open(filename, 'r', encoding="utf8") as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         for line in handle:
             datastream = line.strip()
             result = find_marker(datastream, marker_length)

@@ -1,9 +1,7 @@
-
-
 def build_file_system(filename):
     print(f"Building file system for {filename}...")
     fs = {}
-    with open(filename, 'r', encoding="utf8") as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         # read in the first line root: "$ cd /"
         assert handle.readline().strip() == "$ cd /"
 
@@ -16,7 +14,7 @@ def build_file_system(filename):
             if line[0] == "$":
                 if line[1] == "cd":
                     if line[2] == "..":
-                        dirname = dirname[:-len(current_dir)-1]
+                        dirname = dirname[: -len(current_dir) - 1]
                         current_dir = dirname[1:-1].split("/")[-1]
                     else:
                         current_dir = line[2]
@@ -24,7 +22,7 @@ def build_file_system(filename):
                 elif line[1] == "ls":
                     continue
             elif line[0] == "dir":
-                fs.setdefault(dirname+line[1]+"/", 0)
+                fs.setdefault(dirname + line[1] + "/", 0)
             elif line[0].isdigit():
                 fs.setdefault(dirname, 0)
                 fs[dirname] += int(line[0])

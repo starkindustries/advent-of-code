@@ -1,8 +1,6 @@
-
-
 def solve(filename):
     elves = []
-    with open(filename, 'r', encoding="utf8") as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         calories = 0
         for line in handle:
             line = line.strip()

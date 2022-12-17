@@ -1,6 +1,7 @@
 import re
 import functools
 
+
 def solve():
     pass
 
@@ -22,7 +23,7 @@ filename = "input.txt"
 # row = 10
 # filename = "sample.txt"
 
-with open(filename, 'r', encoding='utf8') as handle:    
+with open(filename, "r", encoding="utf8") as handle:
     for line in handle:
 
         # Sensor at x=2, y=18: closest beacon is at x=-2, y=15
@@ -32,8 +33,7 @@ with open(filename, 'r', encoding='utf8') as handle:
         sensor = parse_coords(result[0])
         beacon = parse_coords(result[1])
         print(sensor, beacon)
-        sensorlist.append([sensor,beacon])
-
+        sensorlist.append([sensor, beacon])
 
 
 no_beacon = set()
@@ -44,17 +44,17 @@ for item in sensorlist:
     bx, by = beacon
     # check if beacon in row
     if by == row:
-        print("found beacon is row",sensor, beacon)
+        print("found beacon is row", sensor, beacon)
         beacons_in_row.add(beacon)
 
-    manhattan_distance = abs(by - sy) + abs(bx - sx)    
-    # if row is further than the nearest beacon 
+    manhattan_distance = abs(by - sy) + abs(bx - sx)
+    # if row is further than the nearest beacon
     if abs(row - sy) > manhattan_distance:
         # sensor does not reach row, no info gained
-        continue    
+        continue
     # if sy does reach desired row, calculate remaining steps left
     steps = manhattan_distance - abs(row - sy)
-    for x in range(sx-steps, sx+steps+1, 1):
+    for x in range(sx - steps, sx + steps + 1, 1):
         no_beacon.add((x, row))
 
 temp = len(no_beacon)
@@ -64,6 +64,7 @@ for beacon in beacons_in_row:
 
 print("ANSWER part1", temp)
 
+
 def compare(left, right):
     if left[0] == right[0]:
         return 0
@@ -72,26 +73,27 @@ def compare(left, right):
     if left[0] > right[0]:
         return 1
 
-print('part2')
+
+print("part2")
 
 no_beacon = set()
 beacons_in_row = set()
 rowtracker = [[] for _ in range(maxrow)]
 print("GOT HERE")
 
-for item in sensorlist:        
+for item in sensorlist:
     sensor, beacon = item
     sx, sy = sensor
-    bx, by = beacon        
+    bx, by = beacon
     manhattan_distance = abs(by - sy) + abs(bx - sx)
-    print("DIST:", sensor, manhattan_distance)    
-    
+    print("DIST:", sensor, manhattan_distance)
+
     start = sy - manhattan_distance
     start = start if start >= 0 else 0
     end = sy + manhattan_distance + 1
     end = end if end <= maxrow else maxrow
     for row in range(start, end, 1):
-        steps = manhattan_distance - abs(row - sy)        
+        steps = manhattan_distance - abs(row - sy)
         brange = (sx - steps, sx + steps)
         if brange[0] < 0:
             brange = (0, brange[1])
@@ -102,12 +104,12 @@ for item in sensorlist:
         if brange[1] > maxrow:
             brange = (brange[0], maxrow)
         # print("ROW", row)
-        rowtracker[row].append(brange)        
+        rowtracker[row].append(brange)
     # for x in range(sx-steps, sx+steps+1, 1):
     #     rowtracker[row].discard(x)
 
-#rowtracker = sorted(rowtracker, key=functools.cmp_to_key(compare))
-#print(rowtracker)
+# rowtracker = sorted(rowtracker, key=functools.cmp_to_key(compare))
+# print(rowtracker)
 for y, row in enumerate(rowtracker):
     row = sorted(row, key=functools.cmp_to_key(compare))
     # print(row)
@@ -115,12 +117,12 @@ for y, row in enumerate(rowtracker):
         if row[i][0] <= row[i + 1][0] <= row[i][1] + 1:
             # they overlap
             if row[i][1] > row[i + 1][1]:
-                row[i+1] = row[i]
+                row[i + 1] = row[i]
         else:
             # NO OVERLAP WE FOUND IT!
-            x = row[i][1] + 1            
+            x = row[i][1] + 1
             answer = x * 4000000 + y
-            print(row[i], row[i+1], "FOUND IT", x, y, answer)
+            print(row[i], row[i + 1], "FOUND IT", x, y, answer)
             exit()
 
 

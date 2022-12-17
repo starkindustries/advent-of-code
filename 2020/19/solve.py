@@ -5,8 +5,8 @@ def parse_rule(line):
     for sub_rule in temp_description.split("|"):
         sub_rule = sub_rule.strip()
         items = []
-        for item in sub_rule.split(' '):
-            item = item.replace('"', '')
+        for item in sub_rule.split(" "):
+            item = item.replace('"', "")
             if item.isdigit():
                 item = int(item)
             items.append(item)
@@ -18,10 +18,10 @@ def parse_input(filename):
     read_rules = True
     rules = {}
     messages = []
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         for line in handle:
             line = line.strip()
-            if line == '':
+            if line == "":
                 read_rules = False
             elif read_rules:
                 number, description = parse_rule(line)
@@ -57,13 +57,15 @@ def rule_dfs(message, m_index, r, rules):
         # r[1:] = [3, 4][1:] = [4]
         # new2 = [1, 3] + [4] = [1, 3, 4]
         new2 = rules[r[0]][1] + r[1:]
-        return rule_dfs(message, m_index, new1, rules) or rule_dfs(message, m_index, new2, rules)
+        return rule_dfs(message, m_index, new1, rules) or rule_dfs(
+            message, m_index, new2, rules
+        )
     # If rule is a base case 'a' or 'b'
     # ex: r = [1, 4] ==> rules[r[0]][0][0] = rules[1][0][0] = [['a']][0][0] = ['a'][0] = 'a'
-    elif (letter := rules[r[0]][0][0]) in ['a', 'b']:
+    elif (letter := rules[r[0]][0][0]) in ["a", "b"]:
         if message[m_index] == letter:
             r.pop(0)
-            return rule_dfs(message, m_index+1, r, rules)
+            return rule_dfs(message, m_index + 1, r, rules)
         return False
     # If rule is a sequence w/o options
     else:

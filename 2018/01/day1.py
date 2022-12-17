@@ -13,9 +13,9 @@ print("PART 1")
 for change in changeArray:
     sign = change[0]
 
-    if sign == '+':
+    if sign == "+":
         frequency += int(change[1:])
-    elif sign == '-':
+    elif sign == "-":
         frequency -= int(change[1:])
 
 print("Final frequency: " + str(frequency))
@@ -27,16 +27,16 @@ frequencies = set()
 duplicateFound = False
 numTimesLooped = 0
 
-#print("First duplicate: 390")
-#print("Array length: 138573")
-#print("Number of times looped through input: 137")
+# print("First duplicate: 390")
+# print("Array length: 138573")
+# print("Number of times looped through input: 137")
 
 while not duplicateFound:
     for change in changeArray:
         sign = change[0]
-        if sign == '+':
+        if sign == "+":
             frequency += int(change[1:])
-        elif sign == '-':
+        elif sign == "-":
             frequency -= int(change[1:])
 
         if frequency in frequencies:

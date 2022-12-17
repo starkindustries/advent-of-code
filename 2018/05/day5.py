@@ -2,21 +2,22 @@
 # day4
 
 import sys
-import datetime 
+import datetime
 import copy
 
 # Main Program
 if __name__ == "__main__":
     filename = str(sys.argv[1])
-    print("Filename: {}". format(filename))
+    print("Filename: {}".format(filename))
 
-fileObject  = open(filename, "r")
+fileObject = open(filename, "r")
 lines = fileObject.read().splitlines()
 
 polymer = str(lines[0])
 # print(lines[0])
 
 alphabet = "abcdefghijklmnopqrstuvwxyz"
+
 
 def reactPolymer(polymer):
     didChange = True
@@ -25,8 +26,8 @@ def reactPolymer(polymer):
         for i in range(26):
             t1 = alphabet[i].upper() + alphabet[i]
             t2 = alphabet[i] + alphabet[i].upper()
-            #print("{} {}".format(t1, t2))
-            
+            # print("{} {}".format(t1, t2))
+
             lenBefore = len(polymer)
             polymer = polymer.replace(t1, "")
             polymer = polymer.replace(t2, "")
@@ -34,6 +35,7 @@ def reactPolymer(polymer):
                 # change occurred
                 didChange = True
     return polymer
+
 
 length = len(reactPolymer(polymer))
 print("Part 1: Polymer length: {}".format(length))

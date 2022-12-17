@@ -1,6 +1,5 @@
-
 area = []
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     for line in handle:
         area.append(line.strip())
 

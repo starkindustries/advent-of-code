@@ -45,24 +45,26 @@ def doesDiffByOneCharacter(a, b):
 
 
 start = 0
-stop = len(boxIds)-1  # stop at the second to last item
+stop = len(boxIds) - 1  # stop at the second to last item
 step = 1
 # Classic for-loop in python:
 for i in range(start, stop, step):
     # start from the item after i
     # end at the last item in array
-    for j in range(i+1, stop+1, step):
+    for j in range(i + 1, stop + 1, step):
         boxA = boxIds[i]
         boxB = boxIds[j]
         # print("Comparing: {} and {}".format(boxA, boxB))
         result = doesDiffByOneCharacter(boxA, boxB)
         if result[0]:  # result[0] is a boolean
             diffIndex = result[1]
-            print("[{}] and [{}] differ by one char at index {}.".format(
-                boxA, boxB, diffIndex))
+            print(
+                "[{}] and [{}] differ by one char at index {}.".format(
+                    boxA, boxB, diffIndex
+                )
+            )
             print("_BoxA: {}".format(boxA))
             print("_BoxB: {}".format(boxB))
-            print("Share: {} {}".format(boxA[:diffIndex], boxA[diffIndex+1:]))
-            print("PART2 ANSWER: {}{}".format(
-                boxA[:diffIndex], boxA[diffIndex+1:]))
+            print("Share: {} {}".format(boxA[:diffIndex], boxA[diffIndex + 1 :]))
+            print("PART2 ANSWER: {}{}".format(boxA[:diffIndex], boxA[diffIndex + 1 :]))
             break

@@ -2,14 +2,14 @@
 # add items to dictionary of { allergen: possible_ingredients }
 # if allergen is already in dictionary,
 # do an intersection between the current input and the dictionary value
-# if the dictionary value has just 1 item, remove that value from all 
+# if the dictionary value has just 1 item, remove that value from all
 # other allergens' possible values if exists
 def solve(filename):
-    allergen_dict = {}  # { allergen : possible_ingredients }    
+    allergen_dict = {}  # { allergen : possible_ingredients }
     ingredient_count = {}  # { ingredient : count }
 
     with open(filename) as handle:
-        for line in handle:            
+        for line in handle:
             line = line.strip()[:-1]  # remove newline and drop the ')'
             ingredients, allergens = line.split(" (contains ")
             ingredients = ingredients.split(" ")
@@ -20,12 +20,12 @@ def solve(filename):
                     allergen_dict[a] = set(ingredients)
                 else:
                     allergen_dict[a] = allergen_dict[a].intersection(set(ingredients))
-            # Determine which ingredients cannot possibly contain any of the allergens in your list. 
+            # Determine which ingredients cannot possibly contain any of the allergens in your list.
             # How many times do any of those ingredients appear?
             for i in ingredients:
                 ingredient_count.setdefault(i, 0)
                 ingredient_count[i] += 1
-            
+
     allergens = list(allergen_dict.keys())
     while allergens:
         for a in allergens:
@@ -36,12 +36,12 @@ def solve(filename):
                 ingredient = list(allergen_dict[a])[0]
                 for a2 in allergens:
                     allergen_dict[a2].discard(ingredient)
-    
+
     # Remove all allergen ingredients from the count
     allergens = [list(i)[0] for i in allergen_dict.values()]
     for a in allergens:
         ingredient_count.pop(a)
-    
+
     # Part 2
     allergens = sorted(allergen_dict.keys())
     dangerous = ""

@@ -1,4 +1,3 @@
-
 # ****************
 # Crab Actions
 # ****************
@@ -23,10 +22,10 @@
 # 4) The crab selects a new current cup: the cup which is
 # immediately clockwise of the current cup.
 
+
 def run_move(current, cup_map, max_cup_number):
     # action 1: pick up three cups
-    picked = [current.next.data, current.next.next.data,
-              current.next.next.next.data]
+    picked = [current.next.data, current.next.next.data, current.next.next.next.data]
 
     # action 2: select destination
     dest_found = False
@@ -50,11 +49,11 @@ def run_move(current, cup_map, max_cup_number):
     # 1.     |        |  ^ dest (2) needs to point to first node picked (8)
     # 2.     |        ^ third picked (1) needs to point to dest's next node (5)
     # 3.     ^ current (3) needs to point to third picked's next node (2)
-    temp1 = dest.next                    # save dest's next (5)
+    temp1 = dest.next  # save dest's next (5)
     temp2 = current.next.next.next.next  # save third's next (2)
-    dest.next = current.next             # reference 1 above
+    dest.next = current.next  # reference 1 above
     current.next.next.next.next = temp1  # reference 2 above
-    current.next = temp2                 # reference 3 above
+    current.next = temp2  # reference 3 above
 
     # action 4: select new cup
     return current.next
@@ -89,7 +88,7 @@ def solve(puzzle_input, rounds, part2=False):
     # characters"
     if not part2:
         node = cup_map[1].next
-        result = ''
+        result = ""
         while node.data != 1:
             result += str(node.data)
             node = node.next
@@ -111,10 +110,10 @@ class Node:
 
 
 # Part 1
-assert solve('389125467', 10) == '92658374'
-assert solve('389125467', 100) == '67384529'
-assert solve('589174263', 100) == '43896725'
+assert solve("389125467", 10) == "92658374"
+assert solve("389125467", 100) == "67384529"
+assert solve("589174263", 100) == "43896725"
 
 # Part 2
-assert solve('389125467', 10000000, True) == 149245887792
-assert solve('589174263', 10000000, True) == 2911418906
+assert solve("389125467", 10000000, True) == 149245887792
+assert solve("589174263", 10000000, True) == 2911418906

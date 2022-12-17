@@ -1,5 +1,3 @@
-
-
 def solve(filename):
     # Part 1
     def left_fully_contains_right(left, right):
@@ -8,14 +6,15 @@ def solve(filename):
         return False
 
     overlaps = 0
-    with open(filename, 'r') as handle:
-        for line in handle:        
+    with open(filename, "r") as handle:
+        for line in handle:
             pairs = [list(map(int, x.split("-"))) for x in line.strip().split(",")]
             print(pairs)
-            if left_fully_contains_right(pairs[0], pairs[1]) or left_fully_contains_right(pairs[1], pairs[0]):
+            if left_fully_contains_right(
+                pairs[0], pairs[1]
+            ) or left_fully_contains_right(pairs[1], pairs[0]):
                 overlaps += 1
     print("Part 1:", overlaps)
-
 
     # Part 2
     def is_overlapping(left, right):
@@ -23,10 +22,9 @@ def solve(filename):
             return True
         return False
 
-
     overlaps2 = 0
-    with open(filename, 'r') as handle:
-        for line in handle:        
+    with open(filename, "r") as handle:
+        for line in handle:
             pairs = [list(map(int, x.split("-"))) for x in line.strip().split(",")]
             print(pairs)
             if is_overlapping(pairs[0], pairs[1]) or is_overlapping(pairs[1], pairs[0]):
@@ -47,4 +45,3 @@ def test(path):
 
 if __name__ == "__main__":
     test("./")
-    

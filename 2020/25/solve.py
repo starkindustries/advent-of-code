@@ -1,4 +1,3 @@
-
 def transform_subject_num(subj, loop):
     # To transform a subject number, start with the value 1
     value = 1

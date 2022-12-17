@@ -1,7 +1,5 @@
-
-
 def evaluate_part1(equation):
-    equation = equation.replace(' ', '')
+    equation = equation.replace(" ", "")
     result = None
     operand = None
     stack = []
@@ -40,7 +38,12 @@ assert evaluate_part1("5 + (8 * 3 + 9 + 3 * 4 * 3)") == 437
 assert evaluate_part1("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))") == 12240
 assert evaluate_part1("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2") == 13632
 assert evaluate_part1("2 * (5 * ( 8 * ( 4 + 1 ) + 6) * 7)") == 3220
-assert evaluate_part1("9 + 6 + (6 + 7 * 5 * 7 + 4 + 9) * (7 + (2 * 9 + 8 + 4 + 3 * 7) + 6 * 4 * (3 + 8 * 5 * 7) * 6) + ((3 * 4 * 4 + 3) + (4 + 7 + 6 + 6 + 5 + 2) + 6) * 8") == 8711620536
+assert (
+    evaluate_part1(
+        "9 + 6 + (6 + 7 * 5 * 7 + 4 + 9) * (7 + (2 * 9 + 8 + 4 + 3 * 7) + 6 * 4 * (3 + 8 * 5 * 7) * 6) + ((3 * 4 * 4 + 3) + (4 + 7 + 6 + 6 + 5 + 2) + 6) * 8"
+    )
+    == 8711620536
+)
 assert evaluate_part1("4 + ((1 + 2 * 2) * (2 + 4 * 7 + 5 * 3))") == 850
 
 
@@ -50,11 +53,11 @@ def add_then_multiply(stack):
     i = 0
     while i < len(stack) - 1:
         num, operand = stack[i]  # ex: i = 1, r = 4, o = '+'
-        if operand in ['(', ')']:
+        if operand in ["(", ")"]:
             raise RuntimeError(f"Unexpected operand {operand} in stack: {stack}")
         elif operand == "+":
-            num2, operand = stack.pop(i+1)    # r2 = 9, o = '*'
-            stack[i] = (num + num2, operand)  # (4 + 9, *) => (13, *)        
+            num2, operand = stack.pop(i + 1)  # r2 = 9, o = '*'
+            stack[i] = (num + num2, operand)  # (4 + 9, *) => (13, *)
         else:
             i += 1
     # Now evaluate multiplication
@@ -66,7 +69,7 @@ def add_then_multiply(stack):
 
 
 def evaluate_part2(equation):
-    equation = equation.replace(' ', '')
+    equation = equation.replace(" ", "")
     num = None
     operand = None
     stack = []
@@ -107,7 +110,7 @@ assert evaluate_part2("5 + (4 * 1 + (5 * 4) + 1 * 2 + 2)") == 357
 
 
 def solve_part1(filename):
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         puzzle_input = [line.strip() for line in handle]
     sum = 0
     for line in puzzle_input:
@@ -117,7 +120,7 @@ def solve_part1(filename):
 
 
 def solve_part2(filename):
-    with open(filename, 'r') as handle:
+    with open(filename, "r") as handle:
         puzzle_input = [line.strip() for line in handle]
     sum = 0
     for line in puzzle_input:

@@ -30,7 +30,7 @@ def passportIsValid(data):
 
 
 valid = 0
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     passportData = []
     for line in handle:
         line = line.strip()
@@ -133,7 +133,7 @@ def passportIsValid2(data):
 
 
 valid = 0
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     passportData = []
     for line in handle:
         line = line.strip()
@@ -143,7 +143,7 @@ with open("input.txt", 'r') as handle:
                 # print(f"Valid passport: {passportData}")
                 valid += 1
             # else:
-                # print(f"INVALID passport: {passportData}")
+            # print(f"INVALID passport: {passportData}")
             passportData = []
         else:
             passportData.append(line)

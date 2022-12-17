@@ -5,7 +5,7 @@
 rules = {}
 # outside: inside bag rules (part 2)
 rules2 = {}
-with open("input.txt", 'r') as handle:
+with open("input.txt", "r") as handle:
     for line in handle:
         line = line.strip()
         # split the container from its contents
@@ -13,9 +13,8 @@ with open("input.txt", 'r') as handle:
         # drop the period '.' and split on the command ','
         contents = contents[:-1].split(", ")
         # drop the 'bags'
-        container = container.replace(' bags', '')
-        contents = [c.replace(' bags', '').replace(' bag', '')
-                    for c in contents]
+        container = container.replace(" bags", "")
+        contents = [c.replace(" bags", "").replace(" bag", "") for c in contents]
         for c in contents:
             try:
                 number = int(c[:2])

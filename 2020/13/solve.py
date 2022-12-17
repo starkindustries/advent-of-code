@@ -11,7 +11,7 @@ filename = "input.txt"
 # 939
 # 7,13,x,x,59,x,31,19
 
-with open(filename, 'r') as handle:
+with open(filename, "r") as handle:
     fileInput = [line.strip() for line in handle]
 
 departureTime = int(fileInput[0])
@@ -35,8 +35,7 @@ for bus in buses:
         minWaitTime = waitTime
         busID = bus
 
-print(
-    f"Part 1: Wait {minWaitTime} minutes for bus {busID} = {minWaitTime * busID}")
+print(f"Part 1: Wait {minWaitTime} minutes for bus {busID} = {minWaitTime * busID}")
 
 # Part 2
 #                 1    1    2    2    3    3    4    4    5    5    6    6    7    7    8

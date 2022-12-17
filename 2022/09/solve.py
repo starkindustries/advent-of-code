@@ -51,7 +51,7 @@ def print_map(rope):
     offset = 17
     for i, knot in enumerate(rope):
         x, y = knot[0] + offset, knot[1] + offset
-        mymap[y] = mymap[y][:x] + str(i) + mymap[y][x+1:]
+        mymap[y] = mymap[y][:x] + str(i) + mymap[y][x + 1 :]
     for line in reversed(mymap):
         print(line)
     print()
@@ -59,7 +59,7 @@ def print_map(rope):
 
 def solve(filename):
     moves = []
-    with open(filename, 'r', encoding="utf8") as handle:
+    with open(filename, "r", encoding="utf8") as handle:
         for line in handle:
             move = line.strip().split(" ")
             moves.append(move)
@@ -115,13 +115,14 @@ def solve(filename):
             rope[0][index] += delta
             # Apply updates to rest of rope
             for knot_index in range(num_knots - 1):
-                if is_tail_touching(rope[knot_index], rope[knot_index+1]):
+                if is_tail_touching(rope[knot_index], rope[knot_index + 1]):
                     break
                 # if not touching, update position
                 rope[knot_index + 1] = get_new_tail_position(
-                    rope[knot_index], rope[knot_index + 1])
-                #rope_prev[knot_index+1] = rope[knot_index+1].copy()
-                #rope[knot_index+1] = rope_prev[knot_index].copy()
+                    rope[knot_index], rope[knot_index + 1]
+                )
+                # rope_prev[knot_index+1] = rope[knot_index+1].copy()
+                # rope[knot_index+1] = rope_prev[knot_index].copy()
                 if knot_index + 1 == num_knots - 1:
                     tail_path.append(tuple(rope[knot_index + 1]))
             # print(rope)

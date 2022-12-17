@@ -1,5 +1,3 @@
-
-
 def solve():
     pass
 
@@ -7,7 +5,7 @@ def solve():
 lines = []
 
 filename = "input.txt"
-with open(filename, 'r', encoding='utf8') as handle:
+with open(filename, "r", encoding="utf8") as handle:
     for line in handle:
         line = line.strip().split("->")
         points = [tuple(map(int, x.split(","))) for x in line]
@@ -20,14 +18,14 @@ for line in lines:
     # iterate through each point
     for i in range(len(line) - 1):
         x1, y1 = line[i]
-        x2, y2 = line[i+1]
+        x2, y2 = line[i + 1]
         if x1 == x2:
             sign = 1 if y2 > y1 else -1
-            for dy in range(y1, y2+sign, sign):
+            for dy in range(y1, y2 + sign, sign):
                 rocks.add((x1, dy))
         elif y1 == y2:
             sign = 1 if x2 > x1 else -1
-            for dx in range(x1, x2+sign, sign):
+            for dx in range(x1, x2 + sign, sign):
                 rocks.add((dx, y1))
 
 print(rocks)
@@ -48,7 +46,7 @@ def is_sand_resting(position, rocks, sand, lowest_y):
         if y > lowest_y:
             # infinity drop
             return False
-        down, downleft, downright = (x, y+1), (x-1, y+1), (x+1, y+1)
+        down, downleft, downright = (x, y + 1), (x - 1, y + 1), (x + 1, y + 1)
         # check down, down-left, down-right
         if down not in rocks and down not in sand:
             position = down
@@ -72,7 +70,7 @@ def part2(position, rocks, sand, lowest_y):
             # print(position)
             sand.add(position)
             return True
-        down, downleft, downright = (x, y+1), (x-1, y+1), (x+1, y+1)
+        down, downleft, downright = (x, y + 1), (x - 1, y + 1), (x + 1, y + 1)
         # check down, down-left, down-right
         if down not in rocks and down not in sand:
             position = down
@@ -97,7 +95,7 @@ print("count", count)
 
 count = 0
 sand = set()
-while part2(sand_start, rocks, sand, lowest_rock[1]+2):
+while part2(sand_start, rocks, sand, lowest_rock[1] + 2):
     count += 1
 
 print("PART2", count)

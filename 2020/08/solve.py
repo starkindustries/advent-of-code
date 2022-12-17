@@ -10,7 +10,8 @@ def solvePart1(program):
         if programCounter in visited:
             if DEBUG:
                 print(
-                    f"About to execute instruction at {programCounter} a second time.")
+                    f"About to execute instruction at {programCounter} a second time."
+                )
                 print(f"Current accumulator value: {accumulator}")
             return False
         else:
@@ -39,8 +40,7 @@ def solvePart1(program):
         #  instruction in the file"
         # ********************************************************
         if programCounter == len(program):
-            print(
-                f"Program exiting successfully. Counter at: {programCounter}.")
+            print(f"Program exiting successfully. Counter at: {programCounter}.")
             print(f"Current accumulator value: {accumulator}")
             return True
         if programCounter > len(program):
