@@ -1,25 +1,26 @@
 # create an air pocket the size of 3 cubes
 # Area:
-# 12 "wall" cubes are connected, 16 sides covered
-# 14 sides are covered by air pocket
-# 14 cubes total * 6 sides - 12 - 14 = 58 area
+# 12 "wall" cubes are connected: 16 sides covered
+# +14 sides are covered by air pocket
+# covered area = 16 + 14 = 30
+# 14 cubes * 6 sides - 30 = 54 area
 #
 # bottom cap cube
-0,-1,0
+ 0,-1, 0
 # have a cube on all four sides
-1,0,0
--1,0,0
-0,0,1
-0,0,-1
+ 1, 0, 0
+-1, 0, 0
+ 0, 0, 1
+ 0, 0,-1
 # again going one step up
-2,0,0
--2,0,0
-0,0,2
-0,0,-2
+ 1, 1, 0
+-1, 1, 0
+ 0, 1, 1
+ 0, 1,-1
 # again, one more step up
-3,0,0
--3,0,0
-0,0,3
-0,0,-3
+ 1, 2, 0
+-1, 2, 0
+ 0, 2, 1
+ 0, 2,-1
 # top cap cube
-0,4,0
+ 0, 3, 0
