@@ -15,10 +15,13 @@ def get_affordable_robots(resources, costs):
     return tuple(robots)
 
 
-def buy_bot(blueprint, resources, index):
+def buy_bot(blueprint, temp_resources, robots, index):
+    assert isinstance(temp_resources, tuple) and isinstance(robots, tuple)
     _, ore, clay, obs_ore, obs_clay, geode_ore, geode_obs = blueprint
+    resources = list(temp_resources)
+    robots = list(robots)
     if index == ORE:
-        resources[ORE] -= ore
+        resources[ORE] -= ore        
     elif index == CLAY:
         resources[ORE] -= clay
     elif index == OBS:
@@ -27,170 +30,84 @@ def buy_bot(blueprint, resources, index):
     elif index == GEODE:
         resources[ORE] -= geode_ore
         resources[OBS] -= geode_obs
-    return tuple(resources)
+    robots[index] += 1
+    return tuple(resources), tuple(robots)
 
 
-# def breadth_first(start, valvemap):
-#     edge_len = 1
-#     queue = [start]
-#     distances = {}
-#     distances[start] = 0
-
-#     while queue:
-#         valve = queue.pop(0)
-#         tunnels = valvemap[valve]["tunnels"]
-#         for tunnel in tunnels:
-#             if tunnel in distances:
-#                 continue
-#             distances.setdefault(tunnel, 0)
-#             distances[tunnel] = distances[valve] + edge_len
-#             queue.append(tunnel)
-#     return distances
+def collect_resources(robots, temp_resources):
+    assert isinstance(robots, tuple) and isinstance(temp_resources, tuple)
+    resources = list(temp_resources)
+    for index, robot in enumerate(robots):
+        resources[index] += robot
+    return robots, tuple(resources)
 
 
-# def bfs_get_most_geodes(blueprint):
-#     id, ore, clay, obs_ore, obs_clay, geode_ore, geode_obs = blueprint
-#     costs = [ore, clay, obs_ore, obs_clay, geode_ore, geode_obs]
-#     queue = [((1, 0, 0, 0), (0, 0, 0, 0), 1, (0, 0, 0, 0))] # bots, resources, min, bots not bought
-#     result_resources = set()
-
-#     while queue:
-#         robots, resources, minute, bots_not_built = queue.pop(0)
-#         if minute > TIME:
-#             result_resources.add(resources[3])
-#             continue
-#         # get affordable robots before collecting resources
-#         newbots = get_affordable_robots(resources, costs)
-#         # collect resources
-#         for index, robot in enumerate(robots):
-#             resources = list(resources)
-#             resources[index] += robot
-#             resources = tuple(resources)
-        
-#         queue.append((tuple(tempbots), new_resources, minute + 1, (0, 0, 0, 0)))
-
-#         # force buy a geode bot
-#         if newbots[GEODE] > 0:
-#             tempbots = list(robots)
-#             tempbots[index] += bot
-#             new_resources = buy_bot(blueprint, resources, index)
-#             queue.append((tuple(tempbots), new_resources, minute + 1, (0, 0, 0, 0)))
-#             continue
-
-#         for type, bot in enumerate(newbots):
-#             if bot <= 0:
-#                 continue
-#             if bot > 0 and robots[type] == 0:
-#                 tempbots = list(robots)
-#                 tempbots[index] += bot
-#                 new_resources = buy_bot(blueprint, resources, index)
-#                 queue.append((tuple(tempbots), new_resources, minute + 1, (0, 0, 0, 0)))
-#                 break            
-#             tempbots = list(robots)
-#             tempbots[index] += bot
-#             new_resources = buy_bot(blueprint, resources, index)
-#             queue.append((tuple(tempbots), new_resources, minute + 1, (0, 0, 0, 0)))
-        
-#         # # DEBUG
-#         # if minute == 5:
-#         #     print("DEBUG")
-#         # # force buying a clay bot if none available
-#         # if robots[CLAY] < 1 and newbots[CLAY] > 0:
-#         #     pass
-#         # # force buying an obs bot if none available
-#         # elif robots[OBS] < 1 and newbots[OBS] > 0:
-#         #     pass
-#         # # force buying a geode always
-#         # elif newbots[GEODE] > 0:
-#         #     pass
-#         # else:
-#         #     # simulate not buying any bots with exceptions
-#         #     # temp = list(newbots)
-#         #     # for i in range(len(newbots)):
-#         #     #     temp[i] += bots_not_built[i]
-#         #     # temp = tuple(temp)
-#         #     queue.append((robots, resources, minute + 1, newbots))
-#         # # simulate buying any one of the affordable bots
-#         # # note if a robot buying opportunity was skipped, 
-#         # # cannot buy that bot in the future bc that is just wasted 
-#         # # resources
-#         # newbots = list(newbots)
-#         # for i in range(len(newbots)):
-#         #     newbots[i] -= bots_not_built[i]
-#         # newbots = tuple(newbots)
-#         # for index, bot in enumerate(newbots):
-#         #     if bot <= 0:
-#         #         continue
-#         #     tempbots = list(robots)
-#         #     tempbots[index] += bot
-#         #     new_resources = buy_bot(blueprint, resources, index)
-#         #     queue.append((tuple(tempbots), new_resources, minute + 1, (0, 0, 0, 0)))
-#         # print(f"min:{minute}, ID:{id}, bots:{robots}, newbots:{newbots}, res:{resources}")
-#     return result_resources
-
-TIME = 15
-def dfs_get_most_geodes(blueprint, minute, robots, resources, results):
+TIME = 32
+current_max = 0
+def dfs_get_most_geodes(blueprint, minute, robots, resources, not_bought, results):
+    global current_max
     assert isinstance(robots, tuple) and isinstance(resources, tuple)
     if minute == 14 and robots == (1, 4, 1, 0) and resources == (3, 15, 3, 0):
         # if TIME == 15 and robots == (1, 4, 2, 0) and resources == (1, 5, 4, 0):
         print("STATE -", "robots:", robots, "res:", resources)        
     if minute > TIME:        
-        results.add(tuple(resources))
-        return
-    _, ore, clay, obs_ore, obs_clay, geode_ore, geode_obs = blueprint
+        current_max = max(current_max, resources[3])
+        return resources[3]
+
+    id, ore, clay, obs_ore, obs_clay, geode_ore, geode_obs = blueprint
     costs = [ore, clay, obs_ore, obs_clay, geode_ore, geode_obs]
     
-    # resources = [0, 0, 0, 0] # ore, clay, obs, geode
-    # robots = [1, 0, 0, 0] # ore, clay, obs, geode
-    # new_bots = [0, 0, 0, 0]
+    cutoff_time = 32
+    remaining_time = TIME - minute
+    if current_max and minute > cutoff_time:
+        estimate = remaining_time * (remaining_time + 1) // 2
+        future_geodes = robots[3] * (TIME - cutoff_time) + resources[3] + estimate
+        if future_geodes < current_max:
+            # print("PRUNING BRANCH..")
+            return 0
 
     # get affordable robots before collecting resources
     newbots = get_affordable_robots(resources, costs)
-    # collect resources
-    for index, robot in enumerate(robots):
-        resources = list(resources)
-        resources[index] += robot
-    # print(f"min:{minute}, ID:{id}, bots:{robots}, newbots:{newbots}, res:{resources}")
+    robots, resources = collect_resources(robots, resources)
     
-    # force buy a geode bot, ignore other options
+    # print(f"min:{minute}, ID:{id}, bots:{robots}, newbots:{newbots}, res:{resources}, max:{current_max}")
+    
+    # # force buy a geode bot, ignore other options
     if newbots[GEODE] > 0:
-        tempbots = list(robots)
-        tempbots[GEODE] += 1
-        new_resources = buy_bot(blueprint, resources, GEODE)
-        dfs_get_most_geodes(blueprint, minute + 1, tuple(tempbots), new_resources, results)    
-        return
-    # force buy a clay or obs bot if none owned:
-    if newbots[CLAY] > 0 and robots[CLAY] == 0:
-        tempbots = list(robots)
-        tempbots[CLAY] += 1
-        new_resources = buy_bot(blueprint, resources, CLAY)
-        dfs_get_most_geodes(blueprint, minute + 1, tuple(tempbots), new_resources, results)    
-        return
-    # force buy a clay or obs bot if none owned:
-    if newbots[OBS] > 0 and robots[OBS] == 0:
-        tempbots = list(robots)
-        tempbots[OBS] += 1
-        new_resources = buy_bot(blueprint, resources, OBS)
-        dfs_get_most_geodes(blueprint, minute + 1, tuple(tempbots), new_resources, results)    
-        return
+        new_resources, tempbots = buy_bot(blueprint, resources, robots, GEODE)
+        return dfs_get_most_geodes(blueprint, minute + 1, tempbots, new_resources, None, results)       
     
     # simulate saving money. not buying anything
-    dfs_get_most_geodes(blueprint, minute + 1, robots, tuple(resources), results)
-    
+    max_geodes = []
+    temp = dfs_get_most_geodes(blueprint, minute + 1, robots, resources, newbots, results)
+    if temp is not None:
+        max_geodes.append(temp)
+
     # simulate buying any one of the affordable bots
     for index, bot in enumerate(newbots):
-        tempbots = list(robots)
         if bot == 0:
             continue
-        tempbots[index] += 1
-        new_resources = buy_bot(blueprint, resources, index)
-        dfs_get_most_geodes(blueprint, minute + 1, tuple(tempbots), new_resources, results)    
-    return
+        # skip bots that were not bought last round
+        if not_bought and not_bought[index] > 0:
+            continue
+        if index == ORE and robots[ORE] >= geode_ore and robots[ORE] >= ore and robots[ORE] >= clay and robots[ORE] >= obs_ore:
+            continue
+        if index == CLAY and robots[CLAY] >= obs_clay:
+            continue
+        if index == OBS and robots[OBS] >= geode_obs:
+            continue
+        new_resources, tempbots = buy_bot(blueprint, resources, robots, index)
+        temp = dfs_get_most_geodes(blueprint, minute + 1, tempbots, new_resources, None, results)
+        if temp is not None:
+            max_geodes.append(temp)
+    if len(max_geodes) > 0:
+        return max(max_geodes)
+    return 0
 
 
 blueprints = [] # array of tuples (id, ore, clay, obsidian, geode)
 
-filename = "sample.txt"
+filename = "input.txt"
 with open(filename, "r") as handle:
     for line in handle:
         line = line.strip().split()
@@ -207,17 +124,40 @@ with open(filename, "r") as handle:
         blueprint = tuple(map(int, blueprint))
         blueprints.append(blueprint)
 
-print(blueprints)
+# print(blueprints)
 
-
+top_three = []
+total_quality = 0
 for blueprint in blueprints:
+    print(blueprint)
     # resources = [0, 0, 0, 0] # ore, clay, obs, geode
     # robots = [1, 0, 0, 0] # ore, clay, obs, geode    
-    results = set()
-    # results = bfs_get_most_geodes(blueprint)
-    dfs_get_most_geodes(blueprint, 1, (1, 0, 0, 0), (0, 0, 0, 0), results)
-    part1 = max(results, key=lambda item: item[3])
-    print("ANSWER:", part1)
+    results = set()    
+    max_geodes = dfs_get_most_geodes(blueprint, 1, (1, 0, 0, 0), (0, 0, 0, 0), None, results)
+    # part1 = max(results, key=lambda item: item[3])            
+    print("max geodes:", max_geodes)
+    quality = blueprint[0] * max_geodes
+    total_quality += quality
+    print("Quality:", quality)
+    top_three.append(max_geodes)
+    if blueprint[0] == 1 and filename == "sample.txt":
+        if TIME == 24:
+            assert quality == 9
+        if TIME == 32:
+            print("max geodes bp1:", max_geodes)
+            assert max_geodes == 56
+    if blueprint[0] == 2 and filename == "sample.txt":
+        if TIME == 24:
+            assert quality == 24
+        if TIME == 32:
+            assert max_geodes == 62
     # input("Press enter to continue..")
-    break
+    if TIME == 32 and len(top_three) > 2:
+        break
+    # break
 
+print(total_quality)
+part2 = top_three[0] * top_three[1] * top_three[2]
+print("part2", part2, top_three)
+# 1487 part 1
+# part2 13440 [16, 40, 21]
