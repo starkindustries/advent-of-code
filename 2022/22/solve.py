@@ -409,7 +409,7 @@ if filename == "input.txt":
         },
         (50, 100): {
         # TOP_EDGE: ((50, 50), NO_FLIP, UP), # conf
-        RIGHT_EDGE: ((100, 0), NO_FLIP, UP), # conf
+        RIGHT_EDGE: ((100, 0), FLIP, LEFT), # conf
         BOTTOM_EDGE: ((0, 150), NO_FLIP, LEFT), # conf
         # LEFT_EDGE: ((0, 100), NO_FLIP, DOWN), # conf
         },
@@ -443,7 +443,7 @@ if filename == "input.txt":
 history = []
 def move2(position, steps, direction, map):
     x, y = position    
-    for _ in range(steps):
+    for step in range(steps):
         dx, dy = OFFSETS[direction]
         new_x, new_y = x + dx, y + dy
         # if new position is out of bounds or off the map:
@@ -499,9 +499,9 @@ def move2(position, steps, direction, map):
             y = edge_y
             direction = facing_direction
             history.append((x, y, DIRECTION_IMG[direction]))
-            print_map(True)
-            print(f"({x}, {y})")
-            input("press enter to continue..")
+            # print_map(True)
+            # print(f"({x}, {y}), step {step} out of {steps}")
+            # input("press enter to continue..")
             continue
         # If new position is within map bounds:
         new_map_position = map[y + dy][x + dx]
@@ -511,19 +511,78 @@ def move2(position, steps, direction, map):
             x += dx
             y += dy
             history.append((x, y, DIRECTION_IMG[direction]))
-        print_map(True)
-        print(f"({x}, {y})")        
-        input("press enter to continue..")
+        # print_map(True)
+        # print(f"({x}, {y}), step {step} out of {steps}")
+        # input("press enter to continue..")
     return (x, y), direction
 
 
-position = map[0].index('.')
-position = (position, 0)
+def test_move(position, steps, direction, map, correct_pos, correct_dir):
+    global history
+    history = []
+    ret_pos, ret_dir = move2(position, steps, direction, map)
+    print("Given:", position, DIR_STRINGS[direction], "Results:", ret_pos, DIR_STRINGS[ret_dir], "Correct:", correct_pos, DIR_STRINGS[correct_dir])
+    assert ret_pos == correct_pos
+    assert ret_dir == correct_dir
 
-# NUM_DIRECTIONS = 4
+
+#
+#         1...2...  (50, 0), (100, 0)
+#         ........
+#         3...      (50, 50)
+#         ....
+#     4...5...      (0, 100), (50, 100)
+#     ........
+#     6...          (0, 150)
+#     ....
+#         
+
+
+# Tests
+history = []
+# (50, 0)
+test_move((50, 0), 1, UP, map, (0, 150), RIGHT)
+test_move((99, 0), 1, UP, map, (0, 199), RIGHT)
+
+test_move((50, 0), 1, LEFT, map, (0, 149), RIGHT)
+test_move((50, 49), 1, LEFT, map, (0, 100), RIGHT)
+
+# (100, 0)
+test_move((100, 0), 1, UP, map, (0, 199), UP)
+test_move((149, 0), 1, UP, map, (49, 199), UP)
+
+test_move((149, 0), 1, RIGHT, map, (99, 149), LEFT)
+test_move((149, 49), 1, RIGHT, map, (99, 100), LEFT)
+
+test_move((100, 49), 1, DOWN, map, (99, 50), LEFT)
+test_move((149, 49), 1, DOWN, map, (99, 99), LEFT)
+
+# (50, 50)
+test_move((50, 50), 1, LEFT, map, (0, 100), DOWN)
+test_move((50, 99), 1, LEFT, map, (50, 99), LEFT) # hits wall
+test_move((50, 98), 1, LEFT, map, (48, 100), DOWN) 
+
+# (0, 100)
+test_move((2, 100), 1, UP, map, (50, 52), RIGHT)
+test_move((48, 100), 1, UP, map, (50, 98), RIGHT)
+
+test_move((0, 100), 1, LEFT, map, (50, 49), RIGHT)
+test_move((0, 149), 1, LEFT, map, (50, 0), RIGHT)
+
+# (50, 100)
+test_move((99, 100), 1, RIGHT, map, (149, 49), LEFT)
+test_move((99, 149), 1, RIGHT, map, (149, 0), LEFT)
+
+test_move((50, 149), 1, DOWN, map, (49, 150), LEFT)
+test_move((99, 149), 1, DOWN, map, (49, 199), LEFT)
+
+input("TEST COMPLETED..")
+# exit()
+# NUM_DIRECTIONS = 4  
 # LEFT_TURN = "L"
 # RIGHT_TURN = "R"
 
+position = (map[0].index('.'), 0)
 direction = RIGHT
 instructions = instructions_part2
 while True:
@@ -559,4 +618,5 @@ if filename == "sample.txt":
     print("SUCCESS!!!", answer)
 # 76360 too low
 # 135120 too low
-# 50486
+# 50486 no
+# part2: 197122 YES!
