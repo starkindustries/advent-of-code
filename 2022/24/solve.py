@@ -1,5 +1,7 @@
 import sys
+import hashlib
 from copy import deepcopy
+import json
 
 
 sys.setrecursionlimit(100000)
@@ -14,6 +16,8 @@ BLIZZARD = (LEFT, RIGHT, UP, DOWN)
 WIDTH = None
 HEIGHT = None
 ELF = "E"
+GREEN = '\033[92m'
+END_COLOR = '\033[0m'
 
 open('map_printout.txt', 'w').close()
 
@@ -27,7 +31,7 @@ def print_map(width, height, walls, blizzards, elf, to_file=False):
             if (x, y) == elf:
                 # assert elf not in blizzards
                 # assert elf not in walls
-                row += ELF
+                row += GREEN + ELF + END_COLOR
             elif (x, y) in walls:
                 row += WALL            
             elif (x, y) in blizzards:
@@ -67,6 +71,15 @@ OFFSETS = {
     DOWN:  ( 0,  1),
 }
 
+blizzards_lookup = []
+def get_all_blizzards(blizzards, walls):
+    global blizzards_lookup
+    blizzards_lookup.append(blizzards)
+    for i in range(1000):
+        blizzards = move_blizzards(blizzards, walls)
+        blizzards_lookup.append(blizzards)
+
+
 def move_blizzards(blizzards, walls):
     new_blizzards = {}
     for position, directions in blizzards.items():
@@ -79,47 +92,106 @@ def move_blizzards(blizzards, walls):
     return new_blizzards
 
 
-def bfs_search(start, stop, blizzards, walls, width, height):
-    edge_len = 1
-    queue = [(start, blizzards, 0)]
+def bfs_search(start, stop, blizzards, walls, width, height, starting_blizzard):
+    # prunes_by_visited = 0
+    # prunes_by_distance = 0
+    # prunes_by_steps = 0
+    # prunes_by_waits = 0
+    
+    start_x, start_y = start
+    queue = [(start_x, start_y, 0)]
     distances = []
 
-    for _ in range(height):
-        distances.append([-1 for _ in range(width)])
+    for _ in range(width * height):
+        array = []
+        for _ in range(height):
+            array.append([-1 for _ in range(width)])
+        distances.append(array)
+
     start_x, start_y = start
-    distances[start_y][start_x] = 0
-    # min_steps = float("inf")
+    # distances[0][start_y][start_x] = 0
+    # max_visits = 100000
+    # visited = {} 
+    # distance_threshold = 10
+    # min_distance = float("inf")
+    count = 0
+    # too_many_steps = 631
+    # max_waits = 200
+    # waited = {}
 
     while queue:
-        elf, blizzards, steps = queue.pop(0)
-        if elf == stop:
-            return distances
-                                
-        # search for new position
-        elf_x, elf_y = elf
-        neighbors = [
-            (elf_x - 1, elf_y),
-            (elf_x + 1, elf_y),
-            (elf_x, elf_y - 1),
-            (elf_x, elf_y + 1),
-        ]
+        count += 1
+        elf_x, elf_y, steps = queue.pop(0)
+        elf = elf_x, elf_y
+                
+        # print_map(width, height, walls, blizzards, elf)
+        if count % 1000 == 0:
+            print(count, width*height*height*width)
+        # Prune        
+        # if steps > too_many_steps:
+        #     prunes_by_steps += 1
+        #     continue
+        blizzards = blizzards_lookup[steps + starting_blizzard]
+        if elf in walls or elf in blizzards or elf_y >= HEIGHT or elf_y < 0 or elf_x < 0 or elf_x > width:
+            continue
 
-        new_blizzards = move_blizzards(blizzards, walls)
-        print_map(width, height, walls, new_blizzards, elf)
+        if distances[steps][elf_y][elf_x] == -1:
+            distances[steps][elf_y][elf_x] = steps
+        else:
+            continue
+
+        if elf == stop:            
+            return distances
+
+        # if did_wait:
+        #     waited.setdefault(elf, 0)
+        #     waited[elf] += 1
+        # visited.setdefault(elf, 0)
+        # visited[elf] += 1
+        # if elf in waited and waited[elf] > max_waits:
+        #     prunes_by_waits += 1
+        #     continue
+        # if visited[elf] > max_visits:
+        #     prunes_by_visited += 1
+        #     continue            
+        # distance = distance_between(elf, stop)
+        # min_distance = distance if distance < min_distance else min_distance
+        # if distance_between(elf, stop) > min_distance + distance_threshold:
+        #     prunes_by_distance += 1
+        #     continue
+
+        # if count > 10000:
+        #     count = 0
+        #     print_map(width, height, walls, blizzards, elf)
+        #     print((elf_x, elf_y), "distance to goal:", distance, "steps:", steps, "min_distance:", min_distance)
+        #     if elf in waited:
+        #         print("times waited:", waited[elf])
+        #     print("prunes. visits:", prunes_by_visited, "distance:", prunes_by_distance, "steps:", prunes_by_steps, "waits:", prunes_by_waits)
+        #     print("max visited:", max([val for _, val in visited.items()]))
+        
         steps += 1
+        # new_blizzards = move_blizzards(blizzards, walls)
+        # print("steps", steps)
+        # new_blizzards = blizzards_lookup[steps]
+        neighbors = [
+            (elf_x - 1, elf_y, steps),
+            (elf_x + 1, elf_y, steps),
+            (elf_x, elf_y - 1, steps),
+            (elf_x, elf_y + 1, steps),
+            (elf_x, elf_y, steps)
+        ]        
+        # move
         for neighbor in neighbors:
-            if neighbor in walls or neighbor in new_blizzards \
-                    or neighbor[1] <= 0 or neighbor[1] >= HEIGHT:
-                # neighbor[1] == 0 is y at the starting point, do not consider
-                continue
-            x, y = neighbor
-            # print((x, y))
-            if distances[y][x] == -1:
-                distances[y][x] = steps
-            queue.append((neighbor, new_blizzards, steps))
-        # check if waiting will put elf in a blizzard
-        if elf not in new_blizzards and steps > 1:
-            queue.append((elf, new_blizzards, steps))
+            # did_wait = False
+            # nx, ny, steps = neighbor
+            queue.append(neighbor)
+        # wait
+        # if steps >= 1 and elf_y > 0:
+        #     did_wait = True
+        # queue.append(elf_x, elf_y, steps)
+            # queue.append((elf, new_blizzards, steps, did_wait))
+    # print("prunes. visits:", prunes_by_visited, "distance:", prunes_by_distance, "steps:", prunes_by_steps, "waits:", prunes_by_waits)
+    # print("max visited:", max([val for _, val in visited.items()]))
     return distances
 
 
@@ -127,6 +199,16 @@ def distance_between(pos1, pos2):
     x1, y1 = pos1
     x2, y2 = pos2
     return abs(x2 - x1) + abs(y2 - y1)
+
+
+def get_min_distance(position, distances):
+    stop_x, stop_y = position
+    min_steps = float("inf")
+    for state in distances:    
+        steps = state[stop_y][stop_x]
+        if steps != -1:
+            min_steps = min(min_steps, steps)
+    return min_steps
 
 # MAX_VISITS = 5
 # visited = {}
@@ -200,7 +282,7 @@ try:
     filename = str(sys.argv[1])
 except Exception as e:
     print("Warning exception:", e)
-    filename = "sample2"
+    filename = "sample"
 # assert filename == "input" or filename == "sample"
 filename += ".txt"
 
@@ -226,11 +308,13 @@ stop = (WIDTH - 2, HEIGHT - 1)
 print(f"width: {WIDTH}, height: {HEIGHT}")
 print_map(WIDTH, HEIGHT, walls, blizzards, start)
 
+get_all_blizzards(blizzards, walls)
 # DEBUG
-blizzards_copy = deepcopy(blizzards)
-for _ in range(20):
-    print_map(WIDTH, HEIGHT, walls, blizzards_copy, start, to_file=True)
-    blizzards_copy = move_blizzards(blizzards_copy, walls)
+# blizzards_copy = deepcopy(blizzards)
+# blizzards_original = deepcopy(blizzards)
+# for _ in range(20):
+#     print_map(WIDTH, HEIGHT, walls, blizzards_copy, start, to_file=True)
+#     blizzards_copy = move_blizzards(blizzards_copy, walls)
 # DEBUG
 
 # for i in range(10):
@@ -238,17 +322,29 @@ for _ in range(20):
 #     print_map(WIDTH, HEIGHT, walls, blizzards)
 #     input("press enter to continue..")
 
-distances = bfs_search(start, stop, blizzards, walls, WIDTH, HEIGHT)
-print(distances)
-stop_x, stop_y = stop
-answer = distances[stop_y][stop_x]
-print(answer)
+distances = bfs_search(start, stop, blizzards, walls, WIDTH, HEIGHT, 0)
+answer1 = get_min_distance(stop, distances)
+print(answer1)
 
 # answer = dfs_search(start, stop, blizzards, walls, WIDTH, HEIGHT, 0)
 # print("Min distance:", distance_between(start, stop))
 # print("Result:", answer)
 if filename == "sample.txt":
-    assert answer == 18
+    assert answer1 == 18
+if filename == "sample2.txt":
+    assert answer1 == 20
+if filename == "input.txt":
+    assert answer1 == 257
 
 # 1019, 1011, 557, 631 too high
-# 485 not sent
+# 485 not correct
+
+# Part 2
+distances = bfs_search(stop, start, blizzards, walls, WIDTH, HEIGHT, answer1)
+answer2 = get_min_distance(start, distances)
+print(answer2)
+
+distances = bfs_search(start, stop, blizzards, walls, WIDTH, HEIGHT, answer1 + answer2)
+answer3 = get_min_distance(stop, distances)
+print(answer3)
+print("part 2:", answer1, answer2, answer3, "sum:", sum([answer1, answer2, answer3]))
