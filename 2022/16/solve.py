@@ -176,26 +176,6 @@ def depth_first2(current1, current2, time1, time2, opened, maxtime, distance_loo
     max_tuple = max(scores, key=lambda item:item[0])    
     return max_tuple[0]
 
-# def bfs_pressure_search(start, valvemap):
-#     time = 1    
-#     pressures = {}    
-#     queue = [start]
-#     while queue:
-#         valve = queue.pop(0)
-#         if valve not in pressures:
-#             rate = valvemap[valve]["flow"]
-#             pressures[valve] = (maxtime - time - 1) * rate
-        
-#         tunnels = valvemap[valve]["tunnels"]
-#         for tunnel in tunnels:
-#             if tunnel in pressures:
-#                 continue            
-#             queue.append(tunnel)
-#         time += 1
-#         if time >= maxtime:
-#             break
-#     return pressures
-
 
 def solve():
     filename = "sample.txt"
@@ -215,96 +195,9 @@ def solve():
     print("PART 2:", result)
     if filename == "sample.txt":
         assert result == 1707
-    if filename == "input.txt"
+    if filename == "input.txt":
         assert result == 2283
     # Part 2: 2482 not correct; too high..
     # 2265 for part 1 input.txt WRONG..
 
-#     next_valve = "AA"
-#     time = 1
-#     score = 0
-#     opened = set()
-#     while time < maxtime:        
-#         distances = breadth_first(next_valve, valvemap)                    
-#         # Get the most valuable next_valve
-#         max_pressure = 0
-#         next_distance = None
-#         for valve, distance in distances.items():
-#             if valve in opened:
-#                 continue
-#             pressure = (maxtime - time - distance) * valvemap[valve]["flow"]
-#             print(f"{valve}:{pressure}", end=' ')
-#             if pressure < max_pressure:
-#                 continue
-#             max_pressure = pressure
-#             next_valve = valve
-#             next_distance = distance
-#         # Move to that valve
-#         print("***** OPENED", next_valve)
-#         opened.add(next_valve)
-#         time += next_distance + 1 # +1 for opening valve
-#         score += max_pressure    
-#     return score
-
-
-#pressures = bfs_pressure_search("AA", valvemap)
-#print("PRESSURES", pressures)
-#distances = bfs_search("AA", valvemap)
-#print("DISTANCES", distances)
 solve()
-# print("PART 1", score)
-
-# *******************************
-# actions = { valve : true/false }
-# maxtime = 30
-
-# def dfs(valve, opened, minute):    
-#     if minute >= maxtime:
-#         return 0
-        
-#     scores = []
-
-#     # Option 1: open
-#     rate = valvemap[valve]["flow"]
-#     if rate != 0 and valve not in opened:
-#         opened2 = opened.copy()
-#         opened2.add(valve)
-#         score = rate * (maxtime - minute - 1)
-#         score += dfs(valve, opened2, minute + 1)
-#         scores.append(score)
-    
-#     # Option 2: don't open
-#     tunnels = valvemap[valve]["tunnels"]
-#     for tunnel in tunnels:
-#         score = dfs(tunnel, opened.copy(), minute + 1)
-#         scores.append(score)
-    
-#     max_score = max(scores)
-#     print("DFS", valve, opened, minute, max_score)
-#     return max_score
-
-
-# def dfs(valvemap, location, actions, minute, maxtime):
-#     if minute == maxtime:
-#         return
-    
-#     tunnels = valvemap[location]["tunnels"]
-#     rate = valvemap[location]["flow"]
-#     # timeleft = maxtime - minute    
-#     # Option 1: open the current valve
-#     actions1 = actions.copy()
-#     actions1.append((location, True))
-
-#     minute1 += 1
-#     pressure = rate * timeleft
-    
-#     score = dfs(valvemap, location, open, score + pressure, minute+1, maxtime)
-#     # Option 2: go down one of the tunnels and do an action there
-#     for tunnel in tunnels:
-#         if tunnel not in actions:
-#             score = dfs(valvemap, location, open, score + pressure, minute+1, maxtime)
-    
-
-# score = dfs("AA", set(), 1)
-# print(valvemap)
-# print("SCORE PART 1", score)

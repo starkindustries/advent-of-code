@@ -227,15 +227,7 @@ def calculate_section_height(section, rocks):
     print_section(section)
     print("HEIGHT:", height)
     return height
-        
 
-    for rock_index in range(rocks):
-        while True:
-            if (rock_index % 5) in section[row_index]:
-                rock_index += 1
-                rock_count += 1
-        rock_index %= 5
-    return 
 
 heights = {} # { rock_index : height }
 
