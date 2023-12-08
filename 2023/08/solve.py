@@ -45,7 +45,9 @@ def solve(filename, part2=False):
                 dir_num = 0 if direction == "L" else 1
                 path = camelmap[path][dir_num]
                 steps += 1
-        print(*steps_arr)
+        print(steps_arr)
+        # expand list into args with '*', e.g. *steps_arr
+        # get least-common-multiple from all paths
         result = math.lcm(*steps_arr)        
         print(result)
 
