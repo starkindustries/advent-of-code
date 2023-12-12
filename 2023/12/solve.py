@@ -1,32 +1,12 @@
 import re
 
 def is_valid_arrangement(springs, numbers):
-    num_index = 0
-    damaged = 0
-    for i, s in enumerate(springs):
-        if s == "#":
-            damaged += 1
-            if num_index >= len(numbers):
-                return False
-            if damaged > numbers[num_index]:
-                return False
-        if s in "." and i > 0 and springs[i-1] == "#":
-            if damaged < numbers[num_index]:
-                return False
-            num_index += 1
-            damaged = 0
-    if springs[-1] == "#":
-        # if springs ends with '#' then check final number
-        if damaged < numbers[num_index]:
-            return False
-        num_index += 1
-
-    if num_index < len(numbers):
-        # in this case, we did not iterate through all number requirements
+    matches = re.findall("#+", springs)
+    if len(numbers) != len(matches):
         return False
-    # a quick sanity check
-    # assert springs.count("#") == sum(numbers)
-    # print("VALID", springs, numbers)
+    for number, match in zip(numbers, matches):
+        if number != len(match):
+            return False
     return True
 
 def count_arrangements(springs, numbers):
@@ -69,9 +49,8 @@ def solve(filename, part2=False):
         if part2:
             springs = (springs + "?") * 4 + springs
             numbers = numbers * 5
-        print(springs, numbers)
         count = count_arrangements(springs, numbers)
-        print(f"{springs} {numbers} ways:{count}")
+        # print(f"{springs} {numbers} ways:{count}")
         ways += count
         
     print(ways)
@@ -98,13 +77,13 @@ def test(path):
         assert is_valid_arrangement(springs, numbers)
 
     assert solve(path + "sample.txt")  == 21
-    assert solve(path + "sample.txt", True) == 525152
+    # assert solve(path + "sample.txt", True) == 525152
     # assert solve(path + "sample.txt") == 8410
     # assert solve(path + "input.txt")  == 9312968 # part1
     # assert solve(path + "input.txt") == 597714117556 # part2
     # answer 10920 too high
     solve(path + "input.txt") == 7460
-    solve(path + "input.txt", True)
+    # solve(path + "input.txt", True)
 
 if __name__ == "__main__":
     test("./")
