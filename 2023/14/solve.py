@@ -76,8 +76,12 @@ def solve(filename, part2=False):
 
         for j, prev in enumerate(prev_spheres):
             if prev == spheres2:
-                cycles_to_go = (cycles - j) % (i - j)
-                spheres2 = prev_spheres[j + cycles_to_go - 1]
+                # cycles_to_go
+                #               .-- total required cycles
+                #               |        .-- # cycles already completed
+                #               v        v          v-- # cycles in pattern
+                cycles_to_go = (cycles - (i + 1)) % (i - j)
+                spheres2 = prev_spheres[j + cycles_to_go]
                 found_pattern = True
                 break
         if found_pattern:
