@@ -1,13 +1,10 @@
 # directions
 N, E, S, W = 0, 1, 2, 3
 
-
-def solve(filename, part2=False):
-    with open(filename, "r", encoding="utf8") as handle:
-        lines = [line.strip() for line in handle.readlines()]
-
+def calculate_energized(start, tilemap):
+    assert isinstance(start, tuple)
+    beams = [start]
     beam_path = set()
-    beams = [(-1, 0, E)]
     while beams:
         b = beams.pop(0)
         if b in beam_path:
@@ -16,10 +13,10 @@ def solve(filename, part2=False):
         x, y, dir = b
         if dir == E:
             x2, y2 = x+1, y
-            if x2 >= len(lines[0]):
+            if x2 >= len(tilemap[0]):
                 # out of bounds
                 continue
-            next = lines[y2][x2]
+            next = tilemap[y2][x2]
             if next == "|":
                 beams.append((x2, y2, N))
                 beams.append((x2, y2, S))
@@ -37,7 +34,7 @@ def solve(filename, part2=False):
             x2, y2 = x-1, y
             if x2 < 0:
                 continue
-            next = lines[y2][x2]
+            next = tilemap[y2][x2]
             if next == "|":
                 beams.append((x2, y2, N))
                 beams.append((x2, y2, S))
@@ -55,7 +52,7 @@ def solve(filename, part2=False):
             x2, y2 = x, y-1
             if y2 < 0:
                 continue
-            next = lines[y2][x2]
+            next = tilemap[y2][x2]
             if next == "|" or next == ".":
                 beams.append((x2, y2, N))
                 continue
@@ -71,9 +68,9 @@ def solve(filename, part2=False):
                 continue
         elif dir == S:
             x2, y2 = x, y+1
-            if y2 >= len(lines):
+            if y2 >= len(tilemap):
                 continue
-            next = lines[y2][x2]
+            next = tilemap[y2][x2]
             if next == "|" or next == ".":
                 beams.append((x2, y2, S))
                 continue
@@ -94,8 +91,29 @@ def solve(filename, part2=False):
         if x == -1:
             continue # skip the start coordinate
         energized.add((x, y))
+    return len(energized)
 
-    part1, part2 = len(energized), 1
+def solve(filename, part2=False):
+    with open(filename, "r", encoding="utf8") as handle:
+        lines = [line.strip() for line in handle.readlines()]
+
+    # part1
+    energized = calculate_energized((-1, 0, E), lines)
+
+    # part2
+    energies = []
+    for x in range(len(lines[0])):
+        e1 = calculate_energized((x, 0, S), lines) # top row
+        e2 = calculate_energized((x, len(lines)-1, N), lines) # bottom row
+        energies.extend([e1, e2])
+    for y in range(len(lines)):
+        e1 = calculate_energized((0, y, E), lines) # left column
+        e2 = calculate_energized((len(lines[0])-1, y, W), lines) # right column
+        energies.extend([e1, e2])    
+
+    max_energy = max(energies)
+
+    part1, part2 = energized, max_energy
     print(part1, part2)
     return part1, part2
 
@@ -103,7 +121,7 @@ def solve(filename, part2=False):
 def test(path):
 
     assert solve(path + "sample.txt") == (46, 51)
-    assert solve(path + "input.txt") # == (518107, 303404)
+    assert solve(path + "input.txt") == (8112, 8314)
 
 if __name__ == "__main__":
     test("./")
